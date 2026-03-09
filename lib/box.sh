@@ -57,6 +57,7 @@ draw_box() {
     printf "%s\n" "$br"
 
     [[ -n "$color" ]] && printf '%b' "$RESET"
+    return 0
 }
 
 # --- Draw a box around text ---
@@ -114,6 +115,7 @@ draw_box_text() {
     printf "%s\n" "$br"
 
     [[ -n "$color" ]] && printf '%b' "$RESET"
+    return 0
 }
 
 # --- Draw a header bar ---
