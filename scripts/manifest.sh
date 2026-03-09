@@ -524,6 +524,7 @@ effect_credits() {
         "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
         ""
         "an interactive terminal experience"
+        "by Luke Steuber"
         ""
         "thank you for playing."
         "thank you for listening."

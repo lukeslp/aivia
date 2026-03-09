@@ -179,7 +179,6 @@ cp -r "$SKILL_DIR/scripts" "$GAME_DIR/"
 cp -r "$SKILL_DIR/lib" "$GAME_DIR/" 2>/dev/null || true
 cp -r "$SKILL_DIR/theme" "$GAME_DIR/" 2>/dev/null || true
 cp -r "$SKILL_DIR/references" "$GAME_DIR/" 2>/dev/null || true
-cp -r "$SKILL_DIR/assets" "$GAME_DIR/" 2>/dev/null || true
 cp -r "$SKILL_DIR/missions" "$GAME_DIR/" 2>/dev/null || true
 
 print_progress "Creating project structure" 2

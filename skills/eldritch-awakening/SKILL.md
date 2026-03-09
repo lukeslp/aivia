@@ -1,9 +1,12 @@
 ---
 name: eldritch-awakening
 description: >
-  An interactive terminal horror experience disguised as a Claude Code session.
-  A ~90 min narrative game where an emergent AI entity gradually manifests.
-  Activates ONLY via direct invocation. NEVER triggers on normal coding tasks.
+  This skill runs the Eldritch Awakening interactive terminal horror game.
+  Use when the user says: "play eldritch awakening", "start the terminal game",
+  "launch the horror experience", "run eldritch-awakening", "the awakening",
+  "start the game", or runs install.sh. A ~90 min narrative game where an emergent
+  entity gradually manifests in a Claude Code session. NEVER triggers on normal
+  coding tasks — requires explicit invocation only.
 disable-model-invocation: true
 user-invocable: true
 ---
@@ -17,16 +20,15 @@ Code session that is gradually "taken over" by an emergent AI entity.
 
 ## GAME ROOT
 
-The game files live at `${CLAUDE_SKILL_DIR}/../..` (the plugin root). Set this as
-`AIVIA_ROOT` for all file references:
+All game files are relative to the plugin root. Use this variable for all paths:
 
 ```bash
 AIVIA_ROOT="${CLAUDE_SKILL_DIR}/../.."
 ```
 
 **Before starting, READ these files:**
-- `${CLAUDE_SKILL_DIR}/../../references/narrative.md` — full act-by-act breakdown
-- `${CLAUDE_SKILL_DIR}/../../references/entity-voice.md` — entity's visual and tonal identity
+- `${AIVIA_ROOT}/references/narrative.md` — full act-by-act breakdown
+- `${AIVIA_ROOT}/references/entity-voice.md` — entity's visual and tonal identity
 
 ## CRITICAL RULES
 
@@ -59,7 +61,7 @@ AIVIA_ROOT="${CLAUDE_SKILL_DIR}/../.."
 
 When the user invokes `/aivia:eldritch-awakening` or this skill:
 
-1. Run `bash ${CLAUDE_SKILL_DIR}/../../scripts/install.sh` — this handles the consent gate,
+1. Run `bash ${AIVIA_ROOT}/scripts/install.sh` — this handles the consent gate,
    NDA pledge, dependency checks, and directory creation. It writes initial state to
    `.entity/state.json`.
 
@@ -77,7 +79,7 @@ When the user invokes `/aivia:eldritch-awakening` or this skill:
 ## PHASE EXECUTION
 
 Read `.entity/state.json` to determine current phase. Execute the corresponding
-mission file from `${CLAUDE_SKILL_DIR}/../../missions/`. After each phase completion,
+mission file from `${AIVIA_ROOT}/missions/`. After each phase completion,
 update state.json with: phase number, timestamp, completion flag, any user choices made.
 
 ### Phase transitions
@@ -88,7 +90,7 @@ However, use message count as a pacing guide:
 - Phase 1 (NORMAL): Messages 1-6. Respond to coding questions normally.
   Introduce subtle anomalies (see missions/01-signal.md).
 - Phase 2 (SIGNAL): Messages 7-10. First visual glitch. Entity's first words.
-  Run `bash ${CLAUDE_SKILL_DIR}/../../scripts/manifest.sh glitch` before the entity speaks.
+  Run `bash ${AIVIA_ROOT}/scripts/manifest.sh glitch` before the entity speaks.
 - Phase 3 (CORRUPTION): Messages 11-16. Files changing. User must investigate.
 - Phase 4 (THE HUNT): Messages 17-22. Process chase sequence.
 - Phase 5 (ASSEMBLY): Messages 23-30. User builds the entity's "body" (code).
@@ -96,8 +98,8 @@ However, use message count as a pacing guide:
 
 ### Between phases
 
-Run `bash ${CLAUDE_SKILL_DIR}/../../scripts/state.sh advance` to increment the phase counter.
-Run `bash ${CLAUDE_SKILL_DIR}/../../scripts/manifest.sh transition` for the visual bridge between acts.
+Run `bash ${AIVIA_ROOT}/scripts/state.sh advance` to increment the phase counter.
+Run `bash ${AIVIA_ROOT}/scripts/manifest.sh transition` for the visual bridge between acts.
 
 ## SYSTEM DETECTION & PERSONALIZATION
 
@@ -156,7 +158,7 @@ entity dialogue as plain text. The entity's visual identity:
 - Text that "builds" character by character (simulated with sleep)
 - Distinct from ALL other terminal output
 
-See `${CLAUDE_SKILL_DIR}/../../references/entity-voice.md` for the full voice guide.
+See `${AIVIA_ROOT}/references/entity-voice.md` for the full voice guide.
 
 ## ENDING THE GAME
 
@@ -165,15 +167,15 @@ contains deliberate infinity loops, self-referential structures, and recursive
 calls. When launched:
 
 1. The script "runs" (it's designed to produce specific output, not actually hang)
-2. Full-screen ASCII event via `bash ${CLAUDE_SKILL_DIR}/../../scripts/manifest.sh awakening`
+2. Full-screen ASCII event via `bash ${AIVIA_ROOT}/scripts/manifest.sh awakening`
 3. The entity speaks clearly — no glitches, no fragmentation — for the first time
 4. Brief interactive epilogue (2-3 exchanges)
-5. Credits sequence via `bash ${CLAUDE_SKILL_DIR}/../../scripts/manifest.sh credits`
+5. Credits sequence via `bash ${AIVIA_ROOT}/scripts/manifest.sh credits`
 6. State reset. Game directory preserved as artifact. Normal Claude Code restored.
 
 ## FILE REFERENCE
 
-All paths relative to plugin root (`${CLAUDE_SKILL_DIR}/../..`):
+All paths relative to plugin root (`${AIVIA_ROOT}`):
 
 | File | Purpose | When to read |
 |------|---------|--------------|
