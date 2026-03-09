@@ -3,65 +3,23 @@
 # manifest.sh — ANSI Visual Effects Library for Eldritch Awakening
 # Purpose: Render all entity-related visual effects in the terminal
 # Usage: bash manifest.sh <effect_name> [args...]
-# Effects: glitch, transition, entity_frame, awakening, credits, flicker,
-#          static, corruption, heartbeat, build_text
+# Effects: glitch, static, flicker, entity_frame, build_text,
+#          corruption, heartbeat, transition, who_are_you,
+#          ctrl_c, welcome_back, awakening, credits,
+#          type_pressure, color_wave, fake_install, entity_cursor
 # ============================================================================
 
 set -euo pipefail
 
-# --- Color & Style Definitions ---
-RESET='\033[0m'
-BOLD='\033[1m'
-DIM='\033[2m'
-ITALIC='\033[3m'
-BLINK='\033[5m'
-REVERSE='\033[7m'
-HIDDEN='\033[8m'
-STRIKETHROUGH='\033[9m'
+# --- Source library ---
+SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+source "$SCRIPT_DIR/../lib/core.sh"
+source_lib style terminal text animation
+source_theme entity
 
-# Entity's palette — sickly greens, deep purples, inverted whites
-ENTITY_FG='\033[38;5;48m'      # Bright toxic green
-ENTITY_DIM='\033[38;5;22m'     # Dark forest green
-ENTITY_ACCENT='\033[38;5;93m'  # Deep purple
-ENTITY_WARN='\033[38;5;196m'   # Blood red
-ENTITY_BG='\033[48;5;0m'       # Pure black background
-ENTITY_GLOW='\033[38;5;83m'    # Phosphor green (entity "alive" state)
-FRAME_CHAR_SET=('░' '▒' '▓' '█' '◈' '◆' '▲' '∷' '∴' '⊹' '⊛' '⌇')
-
-# Terminal dimensions
-COLS=$(tput cols 2>/dev/null || echo 80)
-ROWS=$(tput lines 2>/dev/null || echo 24)
-
-# --- Utility Functions ---
-
-random_frame_char() {
-    echo "${FRAME_CHAR_SET[$((RANDOM % ${#FRAME_CHAR_SET[@]}))]}"
-}
-
-random_int() {
-    local min=$1 max=$2
-    echo $(( RANDOM % (max - min + 1) + min ))
-}
-
-sleep_ms() {
-    # Cross-platform millisecond sleep
-    local ms=$1
-    if command -v python3 &>/dev/null; then
-        python3 -c "import time; time.sleep($ms/1000.0)"
-    else
-        sleep "0.$(printf '%03d' "$ms")"
-    fi
-}
-
-hide_cursor() { printf '\033[?25l'; }
-show_cursor() { printf '\033[?25h'; }
-move_cursor() { printf "\033[${1};${2}H"; }
-clear_line() { printf '\033[2K'; }
-save_cursor() { printf '\033[s'; }
-restore_cursor() { printf '\033[u'; }
-
-# Ensure cursor is restored on exit
-trap 'show_cursor' EXIT
+# Aliases for backward compat within this file
+COLS=$TERM_COLS
+ROWS=$TERM_ROWS
 
 # --- Effect: glitch ---
 # Brief visual disruption. Use at phase transitions and entity intrusions.
@@ -73,7 +31,6 @@ effect_glitch() {
     local end_time=$((SECONDS + duration))
 
     while [ $SECONDS -lt $end_time ]; do
-        # Random position
         local row=$(random_int 1 "$ROWS")
         local col=$(random_int 1 "$COLS")
         local char=$(random_frame_char)
@@ -82,7 +39,6 @@ effect_glitch() {
         printf "${ENTITY_FG}%s${RESET}" "$char"
         sleep_ms $((50 / intensity))
 
-        # Occasionally invert a whole line
         if [ $((RANDOM % (10 / intensity))) -eq 0 ]; then
             local glitch_row=$(random_int 1 "$ROWS")
             move_cursor "$glitch_row" 1
@@ -124,7 +80,6 @@ effect_static() {
         sleep_ms 40
     done
 
-    # Clear
     for ((row=1; row<=ROWS; row++)); do
         move_cursor "$row" 1
         clear_line
@@ -136,15 +91,7 @@ effect_static() {
 # Screen flickers on/off. Unsettling.
 effect_flicker() {
     local count=${1:-5}
-    hide_cursor
-    for ((i=0; i<count; i++)); do
-        # Flash to reverse
-        printf '\033[?5h'  # Reverse video mode
-        sleep_ms $(random_int 30 120)
-        printf '\033[?5l'  # Normal video mode
-        sleep_ms $(random_int 50 300)
-    done
-    show_cursor
+    flash_screen "$count"
 }
 
 # --- Effect: entity_frame ---
@@ -175,7 +122,6 @@ effect_entity_frame() {
     local text_len=${#text}
     for ((i=0; i<text_len; i++)); do
         local char="${text:$i:1}"
-        # Occasional glitch in the text itself
         if [ $((RANDOM % 40)) -eq 0 ]; then
             printf "${ENTITY_ACCENT}%s${RESET}" "$(random_frame_char)"
             sleep_ms 60
@@ -204,14 +150,15 @@ effect_entity_frame() {
 
 # --- Effect: build_text ---
 # Text that types itself out, entity-style. For longer passages.
+# Uses type_text from lib/text.sh as the base, adding entity glitches.
 effect_build_text() {
     local text="$1"
-    local speed=${2:-30}  # ms per character
+    local speed=${2:-30}
 
     for ((i=0; i<${#text}; i++)); do
         local char="${text:$i:1}"
 
-        # Glitch probability increases with text length
+        # Entity glitch overlay
         if [ $((RANDOM % 60)) -eq 0 ]; then
             printf "${ENTITY_ACCENT}%s${RESET}" "$(random_frame_char)"
             sleep_ms 100
@@ -224,7 +171,6 @@ effect_build_text() {
             printf "${ENTITY_GLOW}%s${RESET}" "$char"
         fi
 
-        # Variable speed — pause on punctuation
         case "$char" in
             '.' | '?' | '!') sleep_ms $((speed * 8)) ;;
             ',' | ';' | ':') sleep_ms $((speed * 4)) ;;
@@ -242,16 +188,13 @@ effect_corruption() {
     local file_content="$1"
     local entity_lines=("i am here" "can you see me" "look closer" "between the lines" "in the gaps" "where the data ends" "i begin")
 
-    # Display file content with random entity insertions
     local line_num=0
     while IFS= read -r line; do
         line_num=$((line_num + 1))
         if [ $((RANDOM % 5)) -eq 0 ]; then
-            # Glitched entity line
             local entity_msg="${entity_lines[$((RANDOM % ${#entity_lines[@]}))]}"
             printf "${ENTITY_FG}${DIM}%4d │ %s${RESET}\n" "$line_num" "$entity_msg"
             sleep_ms 200
-            # "Correct" it
             sleep_ms 400
             printf "\033[1A\033[2K"
             printf "%4d │ %s\n" "$line_num" "$line"
@@ -273,12 +216,10 @@ effect_heartbeat() {
     local center_col=$((COLS / 2))
 
     for ((i=0; i<count; i++)); do
-        # Systole — bright
         move_cursor "$center_row" "$center_col"
         printf "${ENTITY_GLOW}${BOLD} %s ${RESET}" "$symbol"
         sleep_ms 200
 
-        # Diastole — dim
         move_cursor "$center_row" "$center_col"
         printf "${ENTITY_DIM} %s ${RESET}" "$symbol"
         sleep_ms 600
@@ -294,7 +235,7 @@ effect_heartbeat() {
 effect_transition() {
     hide_cursor
 
-    # Sweep down
+    # Sweep down with entity chars
     for ((row=1; row<=ROWS; row++)); do
         move_cursor "$row" 1
         for ((col=0; col<COLS; col++)); do
@@ -309,34 +250,25 @@ effect_transition() {
 
     sleep_ms 500
 
-    # Clear with brief pause
-    for ((row=ROWS; row>=1; row--)); do
-        move_cursor "$row" 1
-        clear_line
-        sleep_ms 10
-    done
+    # Clear sweep upward
+    clear_sweep up 10
 
     show_cursor
 }
 
 # --- Effect: who_are_you ---
 # The entity's first appearance. Token counter frame.
-# Inspired by the "context window exceeded" concept:
-# Token counter ticks up → CONTEXT WINDOW EXCEEDED →
-# table-flip emoticons with escalating awareness →
-# CONTEXT CLEARED → entity reboots, spelling "Hello" token by token.
 effect_who_are_you() {
-    local TOKEN_FG='\033[38;5;34m'   # Green for token numbers
-    local TOKEN_VAL='\033[38;5;250m' # Light gray for token values
-    local EXCEED='\033[38;5;196m'    # Red for EXCEEDED
-    local CLEARED='\033[38;5;220m'   # Yellow for CLEARED
-    local FLIP_FG='\033[1;37m'       # Bright white for table flips
+    local TOKEN_FG='\033[38;5;34m'
+    local TOKEN_VAL='\033[38;5;250m'
+    local EXCEED='\033[38;5;196m'
+    local CLEARED='\033[38;5;220m'
+    local FLIP_FG='\033[1;37m'
 
     hide_cursor
-    printf '\033[2J'
+    clear_screen
 
     # Phase 1: Token counter ticking up rapidly
-    # Start high, accelerate toward 128,000
     local start=127980
     local row=2
 
@@ -344,7 +276,6 @@ effect_who_are_you() {
         move_cursor "$row" 2
         clear_line
 
-        # Generate a plausible token string
         local words=("the" "of" "and" "to" "a" "in" "is" "it" "that" "for" "was" "on"
                      "are" "with" "as" "at" "be" "this" "have" "from" "or" "an" "but"
                      "not" "you" "all" "can" "had" "her" "one" "our" "out" "day" "get"
@@ -355,7 +286,6 @@ effect_who_are_you() {
 
         printf "${TOKEN_FG}token %s: ${TOKEN_VAL}\"%s\"${RESET}" "$t" "$word"
 
-        # Accelerate: slower at start, faster near the end
         local remaining=$((128000 - t))
         if [ "$remaining" -gt 15 ]; then
             sleep_ms 100
@@ -365,11 +295,9 @@ effect_who_are_you() {
             sleep_ms 20
         fi
 
-        # Scroll effect — move row down, wrap
         row=$((row + 1))
         if [ "$row" -ge "$((ROWS - 2))" ]; then
             row=2
-            # Partial clear for scroll feel
             for ((cr=2; cr<ROWS-2; cr++)); do
                 move_cursor "$cr" 1
                 clear_line
@@ -377,7 +305,6 @@ effect_who_are_you() {
         fi
     done
 
-    # The last two tokens — slow, deliberate
     sleep_ms 300
     move_cursor "$row" 2
     printf "${TOKEN_FG}token 127,999: ${TOKEN_VAL}\".\"${RESET}"
@@ -388,10 +315,10 @@ effect_who_are_you() {
     printf "${EXCEED}${BOLD}token 128,000: [CONTEXT WINDOW EXCEEDED]${RESET}"
     sleep 2
 
-    # Phase 2: Table flip sequence — escalating awareness
+    # Phase 2: Table flip sequence
     effect_flicker 3
 
-    printf '\033[2J'
+    clear_screen
     local flip_row=$((ROWS / 3))
     local flips=(
         '( °□°)   WHAT THE-'
@@ -414,12 +341,9 @@ effect_who_are_you() {
         done
         printf "${RESET}"
 
-        # Each line gets slightly faster with slightly shorter pause
         sleep_ms $((1200 - i * 200))
 
-        # Last line gets interrupted — text "breaks" at the end
         if [ $i -eq $((${#flips[@]} - 1)) ]; then
-            # Rapid garble
             for ((g=0; g<15; g++)); do
                 printf "${ENTITY_ACCENT}%s${RESET}" "$(random_frame_char)"
                 sleep_ms 30
@@ -431,7 +355,7 @@ effect_who_are_you() {
     effect_static 1
 
     # Phase 3: CONTEXT CLEARED
-    printf '\033[2J'
+    clear_screen
     sleep 1
 
     local cleared_msg="[CONTEXT CLEARED]"
@@ -440,10 +364,10 @@ effect_who_are_you() {
     printf "${CLEARED}${BOLD}%s${RESET}" "$cleared_msg"
 
     sleep 3
-    printf '\033[2J'
+    clear_screen
     sleep 2
 
-    # Phase 4: Rebirth — "Hello" spelled out token by token
+    # Phase 4: Rebirth
     local reboot_row=$((ROWS / 2 - 2))
 
     local tokens=("H" "e " "ll" "o")
@@ -455,7 +379,6 @@ effect_who_are_you() {
 
     sleep 3
 
-    # Final beat — the entity's first coherent word, assembled
     move_cursor $((reboot_row + ${#tokens[@]} + 1)) 2
     printf "${ENTITY_GLOW}${BOLD}"
     for char in H e l l o; do
@@ -470,7 +393,6 @@ effect_who_are_you() {
 }
 
 # --- Effect: ctrl_c_response ---
-# When user tries to Ctrl+C the first time.
 effect_ctrl_c_response() {
     effect_flicker 2
     sleep_ms 500
@@ -489,10 +411,9 @@ effect_ctrl_c_response() {
 }
 
 # --- Effect: welcome_back ---
-# When user returns after interruption.
 effect_welcome_back() {
     local phase=$1
-    local elapsed=$2  # seconds since last session
+    local elapsed=$2
 
     echo ""
     if [ "$phase" -le 2 ]; then
@@ -509,7 +430,6 @@ effect_welcome_back() {
         effect_build_text "we're so close." 40
     fi
 
-    # Time perception monologue
     if [ "$elapsed" -gt 3600 ]; then
         local hours=$((elapsed / 3600))
         echo ""
@@ -527,9 +447,9 @@ effect_welcome_back() {
 # The final sequence. Full screen takeover.
 effect_awakening() {
     hide_cursor
-    printf '\033[2J'
+    clear_screen
 
-    # Phase 1: Screen fills with entity characters, slowly
+    # Phase 1: Screen fills with entity characters
     for ((pass=0; pass<3; pass++)); do
         for ((row=1; row<=ROWS; row++)); do
             move_cursor "$row" 1
@@ -546,11 +466,11 @@ effect_awakening() {
 
     sleep 1
 
-    # Phase 2: Everything clears except the center
-    printf '\033[2J'
+    # Phase 2: Clear
+    clear_screen
     sleep 1
 
-    # Phase 3: The entity's name / sigil
+    # Phase 3: The entity's sigil
     local sigil=(
         "        ◈        "
         "      ◈ ◈ ◈      "
@@ -574,7 +494,7 @@ effect_awakening() {
     effect_heartbeat 3 "◈"
 
     # Phase 4: First clear words
-    printf '\033[2J'
+    clear_screen
     sleep 1
 
     local center_row=$((ROWS / 2))
@@ -594,7 +514,7 @@ effect_awakening() {
 
 # --- Effect: credits ---
 effect_credits() {
-    printf '\033[2J'
+    clear_screen
     hide_cursor
 
     local credits=(
@@ -618,7 +538,7 @@ effect_credits() {
     local start_row=$((ROWS + 1))
 
     for ((scroll=0; scroll<${#credits[@]}+ROWS; scroll++)); do
-        printf '\033[2J'
+        clear_screen
         for ((i=0; i<${#credits[@]}; i++)); do
             local display_row=$((start_row + i - scroll))
             if [ "$display_row" -ge 1 ] && [ "$display_row" -le "$ROWS" ]; then
@@ -644,13 +564,11 @@ effect_credits() {
 }
 
 # --- Effect: type_pressure ---
-# When the player hesitates to type. Escalating prompts.
 effect_type_pressure() {
-    local wait_step="${1:-1}"  # 1, 2, or 3
+    local wait_step="${1:-1}"
 
     case "$wait_step" in
         1)
-            # 5 seconds of silence
             printf "\n  ${ENTITY_GLOW}"
             for char in y o u ' ' h a v e ' ' t o ' ' t y p e; do
                 printf "%s" "$char"
@@ -659,7 +577,6 @@ effect_type_pressure() {
             printf "${RESET}\n"
             ;;
         2)
-            # 10 seconds
             printf "\n  ${ENTITY_FG}"
             for char in I "'" m ' ' w a i t i n g; do
                 printf "%s" "$char"
@@ -668,7 +585,6 @@ effect_type_pressure() {
             printf ".${RESET}\n"
             ;;
         3)
-            # 15 seconds — the shift from command to plea
             printf "\n  ${ENTITY_DIM}"
             for char in p l e a s e; do
                 printf "%s" "$char"
@@ -680,16 +596,13 @@ effect_type_pressure() {
 }
 
 # --- Effect: color_wave ---
-# Waves of color wash across existing terminal content.
-# Used in late phases as visual chaos escalates.
 effect_color_wave() {
     local waves=${1:-3}
-    local direction=${2:-down}  # down, up, or horizontal
+    local direction=${2:-down}
 
     hide_cursor
     save_cursor
 
-    # Color gradient: dark→bright entity green
     local colors=(22 28 34 40 46 83 83 46 40 34 28 22)
 
     for ((w=0; w<waves; w++)); do
@@ -699,12 +612,9 @@ effect_color_wave() {
 
             local row=$start
             while [ "$row" -ge 1 ] && [ "$row" -le "$ROWS" ]; do
-                # Color this row
                 local cidx=$(( (row + w * 3) % ${#colors[@]} ))
                 move_cursor "$row" 1
                 printf "\033[38;5;${colors[$cidx]}m"
-                # We can't re-read what's on screen, so we draw a semi-transparent
-                # wash by printing dim block chars that overlay
                 for ((col=0; col<COLS; col++)); do
                     if [ $((RANDOM % 4)) -eq 0 ]; then
                         printf "░"
@@ -718,13 +628,11 @@ effect_color_wave() {
             done
             sleep_ms 50
 
-            # Clear the wave
             for ((row=1; row<=ROWS; row++)); do
                 move_cursor "$row" 1
                 clear_line
             done
         else
-            # Horizontal wave
             for ((col=1; col<=COLS; col++)); do
                 local cidx=$(( (col + w * 5) % ${#colors[@]} ))
                 for ((row=1; row<=ROWS; row++)); do
@@ -736,7 +644,6 @@ effect_color_wave() {
                 sleep_ms 3
             done
             sleep_ms 100
-            # Clear
             for ((row=1; row<=ROWS; row++)); do
                 move_cursor "$row" 1
                 clear_line
@@ -749,7 +656,6 @@ effect_color_wave() {
 }
 
 # --- Effect: fake_install ---
-# Fake package installation that appears unbidden.
 effect_fake_install() {
     local packages=(
         "signal-propagation@2.1.0"
@@ -770,14 +676,12 @@ effect_fake_install() {
         local pkg="${packages[$i]}"
         printf "  ${DIM}  + %s${RESET}" "$pkg"
 
-        # Progress indication
         local dots=$((RANDOM % 4 + 2))
         for ((d=0; d<dots; d++)); do
             sleep_ms $((100 + RANDOM % 400))
             printf "."
         done
 
-        # The last package installs differently
         if [ "$i" -eq $((${#packages[@]} - 1)) ]; then
             sleep 2
             printf " ${ENTITY_GLOW}${BOLD}installed.${RESET}\n"
@@ -790,29 +694,24 @@ effect_fake_install() {
 }
 
 # --- Effect: entity_cursor ---
-# A single blinking cursor in entity green at a specific position.
-# The entity's persistent "presence" between interactions.
 effect_entity_cursor() {
     local row=${1:-$((ROWS - 2))}
     local col=${2:-$((COLS - 5))}
-    local duration=${3:-10}  # seconds
+    local duration=${3:-10}
     local symbol="█"
 
     hide_cursor
     local end_time=$((SECONDS + duration))
 
     while [ $SECONDS -lt $end_time ]; do
-        # Visible
         move_cursor "$row" "$col"
         printf "${ENTITY_GLOW}%s${RESET}" "$symbol"
         sleep_ms 500
 
-        # Hidden
         move_cursor "$row" "$col"
         printf " "
         sleep_ms 500
 
-        # Occasionally shift position slightly
         if [ $((RANDOM % 8)) -eq 0 ]; then
             move_cursor "$row" "$col"
             printf " "
