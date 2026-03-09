@@ -116,7 +116,7 @@ state["environment"] = {
     "terminal": "$TERM_PROGRAM",
     "term_type": "$TERM_TYPE",
     "shell": "$SHELL_TYPE",
-    "hour": $HOUR,
+    "hour": int("$HOUR"),
     "time_context": "$TIME_CONTEXT",
     "screen_cols": $SCREEN_COLS,
     "screen_rows": $SCREEN_ROWS,
