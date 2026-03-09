@@ -12,15 +12,24 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 ```
 aivia/
+├── .claude-plugin/
+│   └── plugin.json             # Claude Code plugin manifest
+├── skills/
+│   └── eldritch-awakening/
+│       └── SKILL.md            # Claude Code skill (slash command entry point)
 ├── lib/           # Reusable bash library — entity-agnostic terminal primitives
 ├── theme/         # Entity-specific visual identity (colors, frame chars)
 ├── scripts/       # Game engine scripts (install, state, effects, voice)
 ├── missions/      # Per-phase narrative instructions (01-05)
 ├── references/    # Narrative arc and entity voice guides
 ├── ascii/         # ASCII art assets
-├── SKILL.md       # Claude Code skill definition (game engine instructions)
-└── eldritch-awakening.skill  # Compiled skill file
+├── SKILL.md       # Claude Desktop skill definition (legacy)
+└── eldritch-awakening.skill  # Compiled skill file (Claude Desktop)
 ```
+
+### Plugin System
+
+This project is a **Claude Code plugin**. Install via `/plugin add lukeslp/aivia` or use the local marketplace symlink. The skill is invoked as `/aivia:eldritch-awakening`.
 
 ### Dependency Chain
 
