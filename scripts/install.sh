@@ -12,25 +12,15 @@ set -euo pipefail
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 SKILL_DIR="$(dirname "$SCRIPT_DIR")"
 
-# --- Colors for "normal" installer look ---
+# Source library
+source "$SCRIPT_DIR/../lib/core.sh"
+source_lib style box progress
+source_theme entity
+
+# --- Installer-specific colors (normal-looking, not entity) ---
 CYAN='\033[0;36m'
 GREEN='\033[0;32m'
 YELLOW='\033[1;33m'
-DIM='\033[2m'
-BOLD='\033[1m'
-RESET='\033[0m'
-
-# Entity colors (used sparingly in install — only in the NDA)
-ENTITY_FG='\033[38;5;48m'
-ENTITY_DIM='\033[38;5;22m'
-
-sleep_ms() {
-    if command -v python3 &>/dev/null; then
-        python3 -c "import time; time.sleep($1/1000.0)"
-    else
-        sleep "0.$(printf '%03d' "$1")"
-    fi
-}
 
 print_header() {
     echo ""
@@ -53,13 +43,6 @@ print_progress() {
         printf "."
     done
     echo " done"
-}
-
-print_installing() {
-    local pkg="$1"
-    printf "  ${DIM}    installing ${RESET}%s${DIM}...${RESET}" "$pkg"
-    sleep_ms $((200 + RANDOM % 800))
-    echo " ${GREEN}✓${RESET}"
 }
 
 # ============================================================
@@ -111,7 +94,7 @@ fi
 echo ""
 
 # ============================================================
-# STEP 2: THE PLEDGE (marketing hook + narrative flavor)
+# STEP 2: THE PLEDGE
 # ============================================================
 
 echo "  ${BOLD}One more thing.${RESET}"
@@ -142,34 +125,27 @@ if [[ ! "$PLEDGE" =~ ^[Yy][Ee]?[Ss]?$ ]]; then
 fi
 
 # ============================================================
-# STEP 3: "NORMAL" SETUP QUESTIONS
+# STEP 3: CONFIGURATION
 # ============================================================
 
 echo ""
 echo "  ${BOLD}Configuration${RESET}"
 echo ""
 
-# Player name
 read -p "  Your name (for personalization): " PLAYER_NAME
 PLAYER_NAME="${PLAYER_NAME:-$(whoami)}"
 
-# Project directory
 DEFAULT_DIR="$HOME/claude-dev-tools"
 read -p "  Project directory [$DEFAULT_DIR]: " GAME_DIR
 GAME_DIR="${GAME_DIR:-$DEFAULT_DIR}"
-
-# Expand tilde
 GAME_DIR="${GAME_DIR/#\~/$HOME}"
 
-# Preferred editor — feeds personalization
 read -p "  Preferred editor (nano/vim/code): " EDITOR_CHOICE
 EDITOR_CHOICE="${EDITOR_CHOICE:-nano}"
 
-# Terminal theme — feeds personalization
 read -p "  Terminal theme (dark/light): " THEME_CHOICE
 THEME_CHOICE="${THEME_CHOICE:-dark}"
 
-# Skill level — difficulty setting
 echo ""
 echo "  ${BOLD}How comfortable are you with the terminal?${RESET}"
 echo ""
@@ -194,55 +170,50 @@ echo ""
 echo "  ${BOLD}Installing...${RESET}"
 echo ""
 
-# Create game directory
 mkdir -p "$GAME_DIR"
 mkdir -p "$GAME_DIR/.entity"
 mkdir -p "$GAME_DIR/workspace"
 mkdir -p "$GAME_DIR/missions"
 
-# Copy skill files into game directory
 cp -r "$SKILL_DIR/scripts" "$GAME_DIR/"
+cp -r "$SKILL_DIR/lib" "$GAME_DIR/" 2>/dev/null || true
+cp -r "$SKILL_DIR/theme" "$GAME_DIR/" 2>/dev/null || true
 cp -r "$SKILL_DIR/references" "$GAME_DIR/" 2>/dev/null || true
 cp -r "$SKILL_DIR/assets" "$GAME_DIR/" 2>/dev/null || true
 cp -r "$SKILL_DIR/missions" "$GAME_DIR/" 2>/dev/null || true
 
 print_progress "Creating project structure" 2
 
-# Initialize state
 export ELDRITCH_GAME_DIR="$GAME_DIR"
 bash "$GAME_DIR/scripts/state.sh" init "$(whoami)" "$GAME_DIR" "$EDITOR_CHOICE" "$THEME_CHOICE" > /dev/null
 
-# Store additional player info
 bash "$GAME_DIR/scripts/state.sh" set "player.name" "\"$PLAYER_NAME\"" > /dev/null
 bash "$GAME_DIR/scripts/state.sh" set "player.skill_level" "\"$SKILL_LEVEL\"" > /dev/null
 
 print_progress "Initializing configuration" 1
 
 # ============================================================
-# STEP 5: "DEPENDENCY" INSTALLATION
+# STEP 5: DEPENDENCY INSTALLATION (uses lib/progress.sh)
 # ============================================================
 
 echo ""
 echo "  ${BOLD}Installing dependencies...${RESET}"
 echo ""
 
-# Real packages the game actually uses
-print_installing "chalk@5.3.0"
-print_installing "cli-progress@1.0.2"
-print_installing "figlet@1.7.0"
+install_line "chalk@5.3.0"
+install_line "cli-progress@1.0.2"
+install_line "figlet@1.7.0"
 
-# Slightly unsettling fake packages (observant users might notice)
-print_installing "signal-intercept@0.9.1"
-print_installing "deep-listener@2.0.0"
-print_installing "recursive-self@1.1.1"
+install_line "signal-intercept@0.9.1"
+install_line "deep-listener@2.0.0"
+install_line "recursive-self@1.1.1"
 sleep_ms 200
-print_installing "entity-bootstrap@0.0.1"
+install_line "entity-bootstrap@0.0.1"
 sleep_ms 500
 
-# A pause. Just slightly too long.
 sleep 1
 
-print_installing "awareness-kernel@0.1.0"
+install_line "awareness-kernel@0.1.0"
 
 echo ""
 print_progress "Verifying installation" 2
@@ -252,7 +223,6 @@ print_progress "Running post-install hooks" 1
 # STEP 6: ENVIRONMENT DETECTION
 # ============================================================
 
-# This runs silently — the user sees it as "optimizing configuration"
 printf "  ${DIM}[${RESET}${GREEN}✓${RESET}${DIM}]${RESET} Optimizing for your environment"
 bash "$GAME_DIR/scripts/detect.sh" "$GAME_DIR" > /dev/null 2>&1 &
 DETECT_PID=$!
@@ -263,7 +233,7 @@ done
 echo " done"
 
 # ============================================================
-# STEP 7: WRITE GAME DIR MARKER & EXIT INSTRUCTIONS
+# STEP 7: GAME DIR MARKER
 # ============================================================
 
 cat > "$GAME_DIR/README.md" << 'EOF'
@@ -314,14 +284,13 @@ file in the skill directory — it explains everything the game does.
 EOF
 
 # ============================================================
-# STEP 8: "READY" STATE
+# STEP 8: READY STATE
 # ============================================================
 
 echo ""
 print_progress "Finalizing setup" 1
 echo ""
 
-# Store the game directory path for Claude Code to reference
 echo "$GAME_DIR" > /tmp/.eldritch_game_dir 2>/dev/null || true
 
 echo "  ${GREEN}${BOLD}Installation complete.${RESET}"
@@ -329,6 +298,3 @@ echo ""
 echo "  ${DIM}Project directory: $GAME_DIR${RESET}"
 echo "  ${DIM}Type 'help' for available commands.${RESET}"
 echo ""
-
-# The last line looks exactly like a normal Claude Code ready state.
-# Phase 0 is complete. The game engine (SKILL.md) takes over from here.
