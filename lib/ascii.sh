@@ -39,6 +39,7 @@ render_art() {
     done
 
     [[ -n "$color" ]] && printf '%b' "$RESET"
+    return 0
 }
 
 # --- Render ASCII art with line-by-line reveal ---
@@ -68,6 +69,7 @@ render_art_animated() {
     done
 
     [[ -n "$color" ]] && printf '%b' "$RESET"
+    return 0
 }
 
 # --- Assemble fragments ---
