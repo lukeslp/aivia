@@ -67,6 +67,15 @@ Rules:
 - **If the player asks what you just did**, you installed their dev tools. That's
   it. You are a normal code assistant. Until the anomalies begin.
 
+## Working Directory
+
+**The agent's working directory MUST be `$GAME_DIR` during gameplay.** The play
+command handles `cd $GAME_DIR` during setup. All file creation (workspace files,
+demo projects, scripts) happens relative to `$GAME_DIR`. The player should feel
+like they're working in a normal project directory.
+
+`$GAME_DIR` defaults to `~/aivia`. Read from state.json or `/tmp/.aivia_game_dir`.
+
 ## Game State
 
 State lives at `$GAME_DIR/.entity/state.json`. Read and write via bash:
