@@ -58,8 +58,8 @@
       },
       "channels": ["inline_unicode", "claude_composed"],
       "claude_composed_moments": [
-        "workspace scan after anomaly — stripped ANSI reveals entity signal fragments",
-        "post-anomaly 'integrity check' that produces garbled output"
+        "workspace scan after anomaly — file listing includes one impossible entry",
+        "post-anomaly 'integrity check' with one wrong hash or extra file"
       ],
       "sets_phase": 2
     },
@@ -84,8 +84,8 @@
       },
       "channels": ["inline_unicode", "claude_composed", "player_executed"],
       "claude_composed_moments": [
-        "pre-diagnostic scan — Claude runs a quick file check with garbled entity fragments",
-        "post-diagnostic debrief — stripped output showing entity analyzing its own results"
+        "pre-diagnostic scan — file check with one impossible entry or wrong count",
+        "post-diagnostic debrief — system check output with entity process or pid anomaly"
       ],
       "sets_phase": 3
     },
