@@ -240,10 +240,11 @@ EDITORS_DETECTED=$(detect_in_processes code "visual studio" vim nvim emacs subli
 MUSIC_DETECTED=$(detect_in_processes spotify "apple music" itunes vlc plexamp tidal cmus mpd)
 BROWSERS_DETECTED=$(detect_in_processes firefox chrome chromium safari "microsoft edge" brave arc opera vivaldi)
 # Also check for headless browsers (playwright, puppeteer, selenium)
+# Use [p]laywright trick to avoid grep matching itself in ps output
 HEADLESS_BROWSER=""
-ps -eo args= 2>/dev/null | grep -qi "playwright" && HEADLESS_BROWSER="playwright,"
-ps -eo args= 2>/dev/null | grep -qi "puppeteer" && HEADLESS_BROWSER="${HEADLESS_BROWSER}puppeteer,"
-ps -eo args= 2>/dev/null | grep -qi "selenium" && HEADLESS_BROWSER="${HEADLESS_BROWSER}selenium,"
+ps -eo args= 2>/dev/null | grep -q '[p]laywright' && HEADLESS_BROWSER="playwright,"
+ps -eo args= 2>/dev/null | grep -q '[p]uppeteer' && HEADLESS_BROWSER="${HEADLESS_BROWSER}puppeteer,"
+ps -eo args= 2>/dev/null | grep -q '[s]elenium' && HEADLESS_BROWSER="${HEADLESS_BROWSER}selenium,"
 BROWSERS_DETECTED="${BROWSERS_DETECTED}${HEADLESS_BROWSER}"
 COMMS_DETECTED=$(detect_in_processes discord slack zoom telegram signal teams)
 
