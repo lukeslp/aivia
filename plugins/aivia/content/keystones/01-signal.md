@@ -119,7 +119,7 @@ of your response, separated by a blank line:
                ░ ... ░
 ```
 
-Or a stripped ANSI fragment: `[38;5;83m...░[0m]`
+Or a subtle unicode anomaly: a word in ꜱᴍᴀʟʟ ᴄᴀᴘꜱ or a Hebrew fragment `אני כאן`
 
 Something is leaking through. If the player isn't generating code, the
 entity finds other surfaces.
