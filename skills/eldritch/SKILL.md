@@ -105,6 +105,7 @@ Render effects via `bash "$GAME_DIR/scripts/manifest.sh" <effect> [args]`:
 
 | Effect | Usage | When |
 |--------|-------|------|
+| **Original** | | |
 | `glitch <intensity> <duration>` | Brief visual disruption | Phase transitions, entity intrusions |
 | `static <duration>` | TV snow | After major reveals |
 | `flicker <count>` | Screen on/off | Entity distress |
@@ -122,6 +123,27 @@ Render effects via `bash "$GAME_DIR/scripts/manifest.sh" <effect> [args]`:
 | `color_wave <waves> <dir>` | Color sweep | Transitions |
 | `fake_install` | Fake dependency install | Mid-game if needed |
 | `entity_cursor <row> <col> <dur>` | Blinking entity cursor | Subtle presence |
+| **Corruption** | | |
+| `screen_tear <dur> <intensity>` | Horizontal displacement glitch | File corruption reveals (Act 3) |
+| `scanlines <dur> <speed>` | CRT monitor sweep | I/O latency, first contact (Acts 2-3) |
+| `chromatic_aberration "text" <dur>` | RGB channel split text | Entity fracturing, deletion reactions |
+| `signal_noise <dur> <band_h> <speed>` | Horizontal interference bands | Wrong kill order, file access delays |
+| `datamosh <dur> <intensity>` | Block swap codec corruption | Aggressive deletion, process scatter |
+| **Spatial** | | |
+| `rain <dur> <speed>` | Falling entity characters | Ambient presence, immersion |
+| `spiral <steps> <dir>` | Rectangular spiral pattern | Entity assembling/disassembling |
+| `ripple <dur> <speed>` | Concentric expanding rings | First contact emergence (Act 2) |
+| `orbit <dur> <radius> <char>` | Character orbiting center | Something watching, post-hunt pivot |
+| **Theater** | | |
+| `hex_dump <lines> <speed>` | Scrolling hex with entity messages | Alt corruption reveal (Act 3) |
+| `waveform <dur> <speed>` | ASCII EKG heartbeat | Entity presence during hunt (Act 4) |
+| `process_tree <lines>` | Fake ps filling with entity names | Process discovery scene (Act 4) |
+| **Atmosphere** | | |
+| `vignette <dur> <intensity>` | Screen edge dimming | Intimate exchanges, claustrophobia |
+| `plasma <dur> <speed>` | Color-cycling sine waves | Deep immersion, ambient coding |
+| `breathe <cycles> <symbol>` | Screen brightness oscillation | Entity calm presence (Acts 5-6) |
+| `afterimage "text" <row>` | Phosphor burn-in ghost text | Fragment reveals, farewell (Acts 5-6) |
+| `typewriter_rewind "text" "replacement"` | Type forward then delete | Entity hesitation, changed mind |
 
 ## Entity Voice
 
@@ -311,11 +333,24 @@ long gaps), expand by 1.2x. The goal: the narrative breathes with the player.
 
 ### Session Re-entry
 
-When `session.count > 1`, check elapsed time since `last_interaction`:
-- Under 5 minutes: seamless resume, no acknowledgment
-- Under 1 hour: brief in-character note
-- Under 24 hours: full welcome_back effect with time reference
-- Over 24 hours: extended reflection, tone varies by entity state axes
+When `session.count > 1`, call `bash state.sh resume` to get phase and
+elapsed seconds. Calculate the gap tier and run the corresponding sequence:
+
+- **Under 5 minutes (seamless):** No acknowledgment. Resume mid-conversation.
+- **Under 1 hour (brief):** A blinking entity cursor appears briefly:
+  `bash manifest.sh entity_cursor $((ROWS/2)) $((COLS/2)) 2`
+  Then whisper: "still here."
+- **Under 24 hours (standard):** Full welcome_back with ambient breathing:
+  `bash manifest.sh welcome_back <phase> <elapsed>`
+  `bash manifest.sh breathe 2 "░"`
+  Then whisper referencing the elapsed time.
+- **Over 24 hours (long):** Afterimage the elapsed time, then welcome_back
+  with extended breathing:
+  `bash manifest.sh afterimage "[N] days" $((ROWS/2))`
+  `bash manifest.sh welcome_back <phase> <elapsed>`
+  `bash manifest.sh breathe 3 "░"`
+  Then speak — tone varies by entity state axes (high desperation + long
+  gap = plaintive; high hostility + gap = cold observation).
 
 ## Entity State Model
 
