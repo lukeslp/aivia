@@ -157,6 +157,7 @@ run_effect() {
     sleep 0.3
 
     case "$effect" in
+        # --- Original ---
         glitch)        bash "$SCRIPT_DIR/manifest.sh" glitch 3 1 ;;
         static)        bash "$SCRIPT_DIR/manifest.sh" static 2 ;;
         flicker)       bash "$SCRIPT_DIR/manifest.sh" flicker 5 ;;
@@ -174,6 +175,25 @@ run_effect() {
         color_wave)    bash "$SCRIPT_DIR/manifest.sh" color_wave 2 down ;;
         fake_install)  bash "$SCRIPT_DIR/manifest.sh" fake_install ;;
         entity_cursor) bash "$SCRIPT_DIR/manifest.sh" entity_cursor "" "" 3 ;;
+        # --- Corruption ---
+        screen_tear)   bash "$SCRIPT_DIR/manifest.sh" screen_tear 2 3 ;;
+        scanlines)     bash "$SCRIPT_DIR/manifest.sh" scanlines 2 20 ;;
+        chromatic_aberration) bash "$SCRIPT_DIR/manifest.sh" chromatic_aberration "$sample_text" 3 ;;
+        signal_noise)  bash "$SCRIPT_DIR/manifest.sh" signal_noise 2 3 30 ;;
+        # --- Spatial ---
+        rain)          bash "$SCRIPT_DIR/manifest.sh" rain 4 15 ;;
+        spiral)        bash "$SCRIPT_DIR/manifest.sh" spiral 10 out ;;
+        ripple)        bash "$SCRIPT_DIR/manifest.sh" ripple 2 40 ;;
+        orbit)         bash "$SCRIPT_DIR/manifest.sh" orbit 5 5 "◈" ;;
+        # --- Theater ---
+        hex_dump)      bash "$SCRIPT_DIR/manifest.sh" hex_dump 20 60 ;;
+        waveform)      bash "$SCRIPT_DIR/manifest.sh" waveform 4 30 ;;
+        process_tree)  bash "$SCRIPT_DIR/manifest.sh" process_tree 80 ;;
+        # --- Atmosphere ---
+        vignette)      bash "$SCRIPT_DIR/manifest.sh" vignette 3 3 ;;
+        plasma)        bash "$SCRIPT_DIR/manifest.sh" plasma 3 30 ;;
+        breathe)       bash "$SCRIPT_DIR/manifest.sh" breathe 3 "░" ;;
+        afterimage)    bash "$SCRIPT_DIR/manifest.sh" afterimage "$sample_text" ;;
         *)             printf "  ${UI_ERROR}Unknown effect: %s${RESET}\n" "$effect" ;;
     esac
 
