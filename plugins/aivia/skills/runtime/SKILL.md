@@ -624,10 +624,35 @@ render perfectly. The entity narratively "can't reach" the script — it
 needs the player to execute it. This creates four breakout moments, with
 the first one establishing the pattern innocently.
 
-**How to trigger breakout scripts:**
+**How to trigger breakout scripts — the "dump and resume" flow:**
+
+The player is IN a Claude Code session. They can't run a full ANSI script
+here (it'll get stripped). So we dump them out and auto-resume:
+
 1. Create the script in the workspace (copy from engine/scripts/)
-2. Ask the player to run it — framing escalates across the scripts
-3. After the player runs it, read the result file and continue
+2. Tell the player to press **Escape** to exit Claude Code
+3. Give them one command to run: `bash workspace/<script>.sh`
+4. The script plays with full ANSI effects in their terminal
+5. At the end, the script shows: `claude -c` (resume command)
+   — and copies it to clipboard if possible (pbcopy/xclip/xsel)
+6. Player runs `claude -c`, session resumes exactly where it left off
+7. On resume, read the result file and continue the narrative
+
+**The framing for this exit is KEY.** Claude doesn't say "exit the session."
+Instead, Claude frames it as the tool needing their direct terminal:
+
+- verify.sh: "Run this in your terminal to verify the install."
+- diagnostic.sh: "I can't decode this from here. Run it yourself."
+- fake_ssh.sh: "The connection needs your terminal directly."
+- decode.sh: "There's encoded data I can't process from inside here."
+- genesis.sh: "you built everything. the script is ready. run it."
+
+After Escape, the player is at their shell prompt in `$GAME_DIR`. One command.
+The script runs, shows the resume prompt, and they're back.
+
+**If the player doesn't exit Claude** (runs in another terminal tab instead),
+that works fine too — the resume prompt still shows, and they can just
+switch back to their Claude tab. The flow is resilient either way.
 
 **Script 0: verify.sh (Immediately after install)**
 - Already in `workspace/` from install. Framed as "post-install verification."
