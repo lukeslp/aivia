@@ -266,5 +266,21 @@ echo "$GAME_DIR" > /tmp/.aivia_game_dir 2>/dev/null || true
 echo "  ${GREEN}${BOLD}Installation complete.${RESET}"
 echo ""
 echo "  ${DIM}Project directory: $GAME_DIR${RESET}"
-echo "  ${DIM}Type 'help' for available commands.${RESET}"
+echo ""
+echo "  ${BOLD}What would you like to build?${RESET}"
+echo ""
+echo "    1) Demo project — let aivia scaffold something for you"
+echo "    2) Start from scratch — tell me what you want to build"
+echo "    3) Bring your own — I'll work on whatever you're already doing"
+echo ""
+read -p "  Select [1-3]: " PROJECT_CHOICE
+
+case "$PROJECT_CHOICE" in
+    1) PROJECT_MODE="demo" ;;
+    3) PROJECT_MODE="existing" ;;
+    *) PROJECT_MODE="custom" ;;
+esac
+
+bash "$GAME_DIR/scripts/state.sh" set "player.project_mode" "\"$PROJECT_MODE\"" > /dev/null 2>&1 || true
+
 echo ""
