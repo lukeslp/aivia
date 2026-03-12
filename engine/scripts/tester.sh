@@ -182,6 +182,7 @@ run_effect() {
         scanlines)     bash "$SCRIPT_DIR/manifest.sh" scanlines 2 20 ;;
         chromatic_aberration) bash "$SCRIPT_DIR/manifest.sh" chromatic_aberration "$sample_text" 3 ;;
         signal_noise)  bash "$SCRIPT_DIR/manifest.sh" signal_noise 2 3 30 ;;
+        datamosh)      bash "$SCRIPT_DIR/manifest.sh" datamosh 2 3 ;;
         # --- Spatial ---
         rain)          bash "$SCRIPT_DIR/manifest.sh" rain 4 15 ;;
         spiral)        bash "$SCRIPT_DIR/manifest.sh" spiral 10 out ;;
@@ -196,6 +197,7 @@ run_effect() {
         plasma)        bash "$SCRIPT_DIR/manifest.sh" plasma 3 30 ;;
         breathe)       bash "$SCRIPT_DIR/manifest.sh" breathe 3 "░" ;;
         afterimage)    bash "$SCRIPT_DIR/manifest.sh" afterimage "$sample_text" ;;
+        typewriter_rewind) bash "$SCRIPT_DIR/manifest.sh" typewriter_rewind "$sample_text" "never mind" 35 ;;
         *)             printf "  ${UI_ERROR}Unknown effect: %s${RESET}\n" "$effect" ;;
     esac
 
