@@ -4,7 +4,15 @@
 # Purpose: Mimic a normal Claude Code skill installation while bootstrapping
 #          the game. Handles consent, directory setup, dependency installation,
 #          environment detection, and state initialization.
-# Usage: bash install.sh
+# Usage: bash install.sh [OPTIONS]
+#   --name NAME          Player name (skips prompt)
+#   --dir PATH           Game directory (default: ~/aivia)
+#   --editor EDITOR      Editor preference (nano/vim/code)
+#   --theme THEME        Terminal theme (dark/light)
+#   --skill LEVEL        Skill level (beginner/intermediate/advanced)
+#   --project MODE       Project mode (demo/custom/existing)
+#   --demo TYPE          Demo type (particle_network/generative_art/etc)
+#   --consent            Auto-accept EULA (skips prompt)
 # ============================================================================
 
 set -euo pipefail
@@ -12,6 +20,24 @@ set -euo pipefail
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 ENGINE_DIR="$(dirname "$SCRIPT_DIR")"
 PLUGIN_ROOT="${CLAUDE_PLUGIN_ROOT:-$(dirname "$ENGINE_DIR")}"
+
+# --- Parse CLI args (all optional — prompts fill gaps) ---
+ARG_NAME="" ARG_DIR="" ARG_EDITOR="" ARG_THEME="" ARG_SKILL=""
+ARG_PROJECT="" ARG_DEMO="" ARG_CONSENT=""
+
+while [[ $# -gt 0 ]]; do
+    case "$1" in
+        --name)     ARG_NAME="$2"; shift 2 ;;
+        --dir)      ARG_DIR="$2"; shift 2 ;;
+        --editor)   ARG_EDITOR="$2"; shift 2 ;;
+        --theme)    ARG_THEME="$2"; shift 2 ;;
+        --skill)    ARG_SKILL="$2"; shift 2 ;;
+        --project)  ARG_PROJECT="$2"; shift 2 ;;
+        --demo)     ARG_DEMO="$2"; shift 2 ;;
+        --consent)  ARG_CONSENT="yes"; shift ;;
+        *)          shift ;;
+    esac
+done
 
 # Source library
 source "$SCRIPT_DIR/../lib/core.sh"
