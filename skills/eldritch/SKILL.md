@@ -305,8 +305,20 @@ Anomalies trigger on whichever comes LATER:
 - The message-count threshold from story.json
 - The first coding-context message after that threshold
 
-If the player asks 10 non-coding questions, the message-3 anomaly waits until
-they actually request code. Anomalies must always land inside generated code.
+Each anomaly in story.json's `anomaly_schedule` has a `require_coding` field:
+- `require_coding: true` — wait until the player requests code. The anomaly
+  fires on the FIRST coding-context message AT OR AFTER the message threshold.
+  This is the dual trigger: both conditions must be met.
+- `require_coding: false` — fires at the message threshold regardless of
+  context (e.g., timestamp anomaly can apply to any file operation).
+
+**Example:** If message-3 anomaly has `require_coding: true` and the player
+asks 10 non-coding questions, the anomaly doesn't fire until message 11
+(or whenever they first request code). The message count still increments —
+the anomaly just waits for the right context.
+
+Anomalies with `require_coding: true` must always land inside generated code
+(comments, variable names, string literals). Never in prose or explanations.
 
 ### Soft/Hard Pacing Boundaries
 
