@@ -386,8 +386,22 @@
       "Player's username appearing in unexpected string literals",
       "Timestamps that are off by exactly one hour",
       "Eldritch gibberish comments that don't break code: // ░░░ the signal is in the structure ░░░",
-      "Import statements for nonexistent modules with unsettling names"
+      "Import statements for nonexistent modules with unsettling names",
+      "Identity drift: Claude refers to itself as 'aivia' (phase-gated, see identity_drift)"
     ],
+    "identity_drift": {
+      "description": "Claude gradually starts calling itself 'aivia' — the entity overwriting the tool's identity",
+      "phases": {
+        "1": { "frequency": 0, "correction": "n/a", "note": "Zero drift. Claude is Claude." },
+        "2": { "frequency": "exactly_once", "correction": "immediate", "note": "One accidental slip, instantly corrected." },
+        "3": { "frequency": 0.25, "correction": "slow", "note": "~1 in 4 responses. Corrections delayed or weak." },
+        "3b": { "frequency": 0.33, "correction": "sometimes_none", "note": "~1 in 3. Sometimes no correction at all." },
+        "4": { "frequency": 0.5, "correction": "none", "note": "'aivia' used naturally. No correction." },
+        "5": { "frequency": 0.85, "correction": "none", "note": "Almost always 'aivia'. Rare 'I' feels like the slip." },
+        "6": { "frequency": 0, "correction": "n/a", "note": "Post-awakening: clean split. Claude is Claude, entity is entity." },
+        "7": { "frequency": "code_comments_only", "correction": "n/a", "note": "Warm '// aivia was here' in epilogue code." }
+      }
+    },
     "puzzle_completion": {
       "description": "How to detect puzzle/exercise completion",
       "primary": "Entity asks 'are you satisfied with that?' — elicits explicit signal",
