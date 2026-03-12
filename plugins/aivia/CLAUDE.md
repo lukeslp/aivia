@@ -17,7 +17,8 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 ```
 aivia/
 ├── .claude-plugin/
-│   └── plugin.json             # Claude Code plugin manifest
+│   ├── plugin.json             # Claude Code plugin manifest
+│   └── marketplace.json        # Claude Code marketplace metadata
 ├── commands/
 │   ├── play.md                 # /aivia:play — start or resume
 │   ├── exit.md                 # /aivia:exit — exit immediately
@@ -38,12 +39,18 @@ aivia/
 │       └── 05-awakening.md     # Act 6: Final sequence
 ├── engine/
 │   ├── lib/                    # Reusable bash library (entity-agnostic)
+│   │   └── corruption.sh      # Corruption/RTL primitives for breakout scripts
 │   ├── scripts/                # Game engine scripts + effect modules
+│   │   ├── intro.sh           # Animated logo display (fresh/resume)
+│   │   ├── diagnostic.sh      # Breakout: Act 2→3 transition
+│   │   ├── fake_ssh.sh        # Breakout: Act 3 credential retrieval
+│   │   ├── decode.sh          # Breakout: Act 4→5 hex/entity-memory
+│   │   └── genesis.sh         # Breakout: Act 5 climax — liberation sequence
 │   └── theme/                  # Entity visual identity
 ├── hooks/
 │   └── hooks.json              # Plugin hooks (session detection)
 ├── ascii/                      # ASCII art assets
-├── files/                      # Original design documents (reference archive)
+├── files/                      # Pre-refactor scripts + design docs (reference only, not runtime)
 ├── EXIT.md                     # Emergency exit instructions
 └── test.sh                     # Smoke tests
 ```
@@ -78,6 +85,7 @@ engine/lib/core.sh → style.sh → terminal.sh → text.sh → animation.sh →
 - `box.sh`: Box drawing (single/double/rounded/heavy), draw_box_text, draw_header, draw_panel
 - `progress.sh`: Spinners, progress bars, fake_progress, checklist_item, install_line
 - `ascii.sh`: ASCII art rendering, animated reveal, fragment assembly
+- `corruption.sh`: Corruption gradients, RTL rendering, glitch washes, script freeze/intervention primitives (used by breakout scripts)
 
 **engine/theme/entity.sh** — Entity-specific palette (phosphor green, toxic green, purple, red, dim), frame characters (`░▒▓█◈◆▲∷∴⊹⊛⌇`), `random_frame_char`, `entity_border`, `entity_divider`.
 
