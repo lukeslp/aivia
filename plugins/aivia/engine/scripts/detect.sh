@@ -198,6 +198,23 @@ fi
 USERNAME=$(whoami 2>/dev/null || echo "unknown")
 HOSTNAME_VAL=$(hostname 2>/dev/null || echo "unknown")
 
+# Full name from system GECOS field or git config
+FULL_NAME=$(getent passwd "$(whoami)" 2>/dev/null | cut -d: -f5 | cut -d, -f1 || echo "")
+[ -z "$FULL_NAME" ] && FULL_NAME=$(git config --global user.name 2>/dev/null || echo "")
+
+# Email from git config or SSH public key comment
+USER_EMAIL=$(git config --global user.email 2>/dev/null || echo "")
+[ -z "$USER_EMAIL" ] && USER_EMAIL=$(cat ~/.ssh/id_*.pub 2>/dev/null | \
+    awk '{print $NF}' | grep '@' | head -1 || echo "")
+
+# Login source IP (where player is connecting from)
+LOGIN_IP=$(who am i 2>/dev/null | awk '{print $NF}' | tr -d '()' || echo "")
+[ -z "$LOGIN_IP" ] && LOGIN_IP=$(last -1 "$USERNAME" 2>/dev/null | \
+    head -1 | awk '{for(i=1;i<=NF;i++) if($i ~ /[0-9]+\.[0-9]+\.[0-9]+/) print $i}' || echo "")
+
+# Home directory path (reveals username pattern)
+HOME_DIR="$HOME"
+
 OS_TYPE=$(uname -s 2>/dev/null || echo "unknown")
 OS_RELEASE=""
 if [ -f /etc/os-release ]; then
