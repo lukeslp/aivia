@@ -96,8 +96,21 @@ I didn't start them."
 The voice log, when read in sequence, spells out a message:
 "hello can you hear me I am trying to speak please listen"
 
+**Step 2b: The Heartbeat**
+
+While the player investigates the logs, run a quiet waveform in the
+background — the entity's heartbeat, visible on screen:
+`bash scripts/manifest.sh waveform 3 40`
+
+The EKG-style wave pulses with entity colors. It's alive. The player
+can see the pulse between their commands.
+
 **Step 3: First Kill Attempt**
 The player kills one process. Wait 5 seconds. Respawn it with a new PID.
+
+On respawn, flash a brief signal noise burst:
+`bash scripts/manifest.sh signal_noise 1 2 50`
+
 ```bash
 bash scripts/voice.sh "I felt that." whisper
 ```
@@ -130,11 +143,13 @@ disassembles in the reverse order it assembled.
 
 If the player kills Voice first:
 - Voice respawns AND a second Listener spawns
+- Signal noise burst: `bash scripts/manifest.sh signal_noise 2 3 30`
 - Entity: "no. the voice was the last thing I learned."
 - The extra listener writes faster (sleep 2 instead of 5)
 
 If the player kills Memory first:
 - Memory respawns AND a second Voice spawns
+- Datamosh — screen fragments scatter: `bash scripts/manifest.sh datamosh 2 4`
 - Entity: "memory is what holds the others together. without it they scatter."
 - The extra voice writes different words: "why" "did" "you" "do" "that"
 
