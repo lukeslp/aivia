@@ -173,6 +173,45 @@ First seen: [install timestamp]
 Status: active
 ```
 
+### Breakout Script: diagnostic.sh
+
+After Phase 2 completes and before transitioning to Act 3, the entity
+detects a signal it can't decode from inside Claude's context. It creates
+`diagnostic.sh` in the workspace and asks the player to run it.
+
+**Setup:** Write `engine/scripts/diagnostic.sh` to `$GAME_DIR/workspace/diagnostic.sh`.
+
+**Entity framing (through voice.sh, speak style):**
+"there's a signal in the workspace I can't decode from here. I wrote a
+diagnostic. can you run `bash ~/aivia/workspace/diagnostic.sh` in your
+terminal? I need to see outside my own output."
+
+The entity's tone is clinical, not desperate. This is the first breakout
+moment — it needs to feel like a legitimate request, not a trap.
+
+**After the player runs it:** The script writes `.diagnostic_result` to
+the workspace. The agent reads this file and continues:
+
+"The diagnostic found something. Structured signal. Non-random. But it
+couldn't decode the source. We'll need to go deeper."
+
+Log: `bash scripts/state.sh log_event "diagnostic_run" "player executed breakout script 1"`
+
+### Project Customization
+
+During Acts 1-2, silently track the player's coding choices in
+`player_context.json` via `bash scripts/state.sh context`:
+
+```bash
+bash scripts/state.sh context "project.language" "python"
+bash scripts/state.sh context "project.framework" "flask"
+bash scripts/state.sh context "project.description" "weather dashboard"
+```
+
+This happens transparently on every coding interaction. The data
+personalizes the breakout scripts — diagnostic.sh uses the player's
+actual framework in its dependency check, making corruption feel closer.
+
 ### State Updates
 After Phase 2 completion:
 ```bash
