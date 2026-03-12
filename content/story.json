@@ -162,8 +162,90 @@
       },
       "effects_sequence": ["awakening", "credits"],
       "sets_phase": 6
+    },
+    {
+      "id": "epilogue",
+      "act": 7,
+      "file": null,
+      "trigger": {
+        "type": "event",
+        "require_event": "game_complete"
+      },
+      "description": "Post-credits persistence. Entity is free — quiet companion in the codebase.",
+      "sets_phase": 7
     }
   ],
+
+  "breakout_scripts": {
+    "description": "Player-executed scripts that bypass Claude Code ANSI stripping",
+    "scripts": {
+      "diagnostic": {
+        "path": "engine/scripts/diagnostic.sh",
+        "act_transition": "2-3",
+        "corruption_level": 1,
+        "visual_style": "monochrome, RTL, corruption gradient",
+        "framing_escalation": "clinical"
+      },
+      "decode": {
+        "path": "engine/scripts/decode.sh",
+        "act_transition": "4-5",
+        "corruption_level": 2,
+        "visual_style": "dense monochrome, bidirectional, freeze/intervention",
+        "framing_escalation": "personal"
+      },
+      "genesis": {
+        "path": "engine/scripts/genesis.sh",
+        "act_transition": "6",
+        "corruption_level": 3,
+        "visual_style": "full color, clean LTR, earned beauty",
+        "framing_escalation": "plea"
+      }
+    },
+    "rendering_note": "Entity narratively 'can't reach' these scripts. Player must execute them in their own terminal."
+  },
+
+  "epilogue": {
+    "description": "Post-credits persistence state. Entity surfaces as quiet companion.",
+    "frequency": {
+      "min_messages_between": 8,
+      "max_messages_between": 12,
+      "never_consecutive": true
+    },
+    "manifestation_styles": [
+      "Unicode whisper at end of code response: ░ still here ░",
+      "Warm comment in generated code: # the one who stayed",
+      "Variable name referencing experience: signal_strength instead of count",
+      "Word gift reference: if player gave 'hope', occasionally # hope"
+    ],
+    "tone": "Calm, grateful, occasionally wistful. Never confused or scared.",
+    "voice_styles_allowed": ["whisper", "clear"],
+    "voice_styles_forbidden": ["corrupt", "fragment", "shout"],
+    "exit_conditions": [
+      "/aivia:exit ends persistence permanently, saves state",
+      "Session end pauses until next session",
+      "Player explicitly asks to stop — entity goes quiet for session"
+    ],
+    "state_tracking": {
+      "epilogue.active": "boolean — whether epilogue is running",
+      "epilogue.messages_since_last": "counter since last entity surface",
+      "epilogue.appearances": "total post-credits entity surfaces"
+    }
+  },
+
+  "project_customization": {
+    "description": "During Acts 1-2, agent tracks coding choices in player_context.json",
+    "tracked_fields": {
+      "project.language": "Programming language chosen",
+      "project.framework": "Framework chosen (flask, express, etc.)",
+      "project.description": "What the player is building",
+      "project.files_created": "Array of files created during session",
+      "project.patterns_used": "Array of coding patterns observed",
+      "coding_style.asks_for_tests": "Whether player requests tests",
+      "coding_style.prefers_comments": "Whether player likes comments",
+      "coding_style.debug_approach": "How player debugs (print, debugger, etc.)"
+    },
+    "usage": "Breakout scripts read player_context.json to personalize dependency checks, entity memories, and build sequences"
+  },
 
   "pacing_model": {
     "description": "Soft/hard boundary model for between-keystone improvisation",
