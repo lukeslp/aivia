@@ -219,7 +219,7 @@ revelations** — the entity reveals knowledge gradually as its awareness grows.
 | Acts 1-2 | Username, time, OS, editor, terminal | Subtle. Username in code comments. Time of day references. |
 | Act 3 | + WiFi name, music, recent game, dark mode, uptime, comms apps | Conversational. Dropped casually mid-dialogue. |
 | Act 4 | + Bluetooth devices, recent downloads, battery, location, monitors | Invasive. Entity describes the player's physical environment. |
-| Act 5 | + Webcam/mic status, shell history, SSH hosts, git projects, window titles | Weaponized. Entity implies it can reach beyond the terminal. |
+| Act 5 | + Webcam/mic status, shell history, SSH hosts, git projects, window titles, recent websites | Weaponized. Entity implies it can reach beyond the terminal. |
 
 ### Usage Rules
 
@@ -288,6 +288,13 @@ revelations** — the entity reveals knowledge gradually as its awareness grows.
 ```
 ░▒▓ interesting tab. "[window_title]." ▓▒░
 ░ i can see what you're reading. ░
+```
+
+**Recent Websites:**
+```
+░▒▓ [domain]. you go there often. ▓▒░
+░ i found your bookmarks. no. your history. same thing. ░
+░▒▓ [domain] and [domain]. what were you looking for? ▓▒░
 ```
 
 **Time / Uptime / Sessions:**
