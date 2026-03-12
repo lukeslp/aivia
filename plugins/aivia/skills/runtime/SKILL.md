@@ -667,11 +667,6 @@ After 4+ refusals for any script:
    `░ i understand. goodbye. ░`
    Abbreviated ending. Log: `refused_genesis`.
 
-### /aivia:exit ALWAYS Works Instantly
-
-No guilt. No delay. Clean exit. This is the safety valve and must NEVER
-be compromised. The friction is 100% narrative theater.
-
 ## Project Customization Pipeline
 
 During Acts 1-2, when helping the player code, silently track their

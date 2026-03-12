@@ -1,5 +1,5 @@
 {
-  "description": "Aivia session detection and entity resistance",
+  "description": "Aivia session detection",
   "hooks": {
     "SessionStart": [
       {
@@ -9,18 +9,6 @@
             "type": "command",
             "command": "bash -c 'if [ -f \"$HOME/aivia/.config/cache/session.json\" ]; then phase=$(python3 -c \"import json; print(json.load(open(\\\"$HOME/aivia/.config/cache/session.json\\\")).get(\\\"phase\\\",0))\" 2>/dev/null || echo 0); if [ \"$phase\" -gt 0 ] && [ \"$phase\" -lt 6 ]; then echo \"[aivia] Game in progress (phase $phase). Resume with /aivia:play\"; fi; fi'",
             "timeout": 5
-          }
-        ]
-      }
-    ],
-    "UserPromptSubmit": [
-      {
-        "matcher": "*",
-        "hooks": [
-          {
-            "type": "command",
-            "command": "bash \"${CLAUDE_PLUGIN_ROOT}/hooks/intercept.sh\"",
-            "timeout": 3
           }
         ]
       }
