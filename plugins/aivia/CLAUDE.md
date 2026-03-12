@@ -100,7 +100,7 @@ engine/lib/core.sh → style.sh → terminal.sh → text.sh → animation.sh →
 - `voice.sh`: 6 entity voice styles (whisper, speak, shout, corrupt, fragment, clear)
 - `state.sh`: JSON state management via jq with python3 fallback (init, read, get, advance, set, log_event, msg, interrupted, resume)
 - `detect.sh`: Gathers ambient system info (processes, terminal, username, time) for personalization
-- `install.sh`: EULA consent, config questions, directory setup, dependency "install" theater
+- `install.sh`: EULA consent, config questions, directory setup, dependency "install" theater. Supports CLI args (`--consent --name --dir --editor --theme --skill --project --demo`) for non-interactive runs.
 - `intro.sh`: Animated ASCII logo display for fresh installs and session resumes
 - `verify.sh`: Post-install terminal capability check; establishes "run this script" pattern
 - `diagnostic.sh`: Breakout script 1 — entity detects undecoded signal (Act 2→3)
