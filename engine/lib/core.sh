@@ -42,8 +42,13 @@ _aivia_compute_content_width() {
 _aivia_compute_content_width
 
 # --- Cross-platform millisecond sleep ---
+# Honors AIVIA_SPEED_MULT env var (percentage: 50=2x faster, 200=2x slower)
 sleep_ms() {
     local ms=$1
+    if [[ -n "${AIVIA_SPEED_MULT:-}" ]] && [[ "$AIVIA_SPEED_MULT" -ne 100 ]]; then
+        ms=$(( ms * AIVIA_SPEED_MULT / 100 ))
+        [[ "$ms" -lt 1 ]] && ms=1
+    fi
     if command -v python3 &>/dev/null; then
         python3 -c "import time; time.sleep($ms/1000.0)"
     else
