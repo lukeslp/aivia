@@ -577,6 +577,7 @@ probes = [
     ("docker_containers",  "Docker Containers",   "files",     env_list("DOCKER")),
     ("top_commands",       "Top Shell Commands",  "history",   env_list("TOP_CMDS")),
     ("window_titles",      "Window Titles",       "history",   env_list("WINDOW_TITLES", "|")),
+    ("recent_sites",       "Recent Websites",     "history",   env_list("RECENT_SITES", "|")),
     ("battery_percent",    "Battery %",           "hardware",  env_int("BATTERY_PCT")),
     ("battery_charging",   "Battery Charging",    "hardware",  env_bool("BATTERY_CHARGING")),
     ("uptime_seconds",     "Uptime (seconds)",    "hardware",  env_int("UPTIME_SECONDS")),
