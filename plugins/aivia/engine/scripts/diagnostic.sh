@@ -25,6 +25,9 @@ source "$SCRIPT_DIR/../lib/core.sh"
 source_lib style terminal text animation progress corruption
 source_theme entity
 
+# --- Main function (wraps everything so we can use local) ---
+main() {
+
 # --- State paths ---
 STATE_FILE="$GAME_DIR/.config/cache/session.json"
 CONTEXT_FILE="$GAME_DIR/.config/cache/context.json"
@@ -205,4 +208,7 @@ if [[ -f "$STATE_FILE" ]]; then
     bash "$SCRIPT_DIR/state.sh" log_event "diagnostic_run" "signal_received" 2>/dev/null || true
 fi
 
+}
+
+main "$@"
 exit 0

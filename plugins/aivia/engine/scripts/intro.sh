@@ -21,22 +21,26 @@ PLAYER_NAME="${2:-}"
 # Larger, more impactful than the install header
 
 LOGO='
-          ░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░
-          ░                                        ░
-          ░    ▄▀▄  ▀  █  █  ▀  ▄▀▄               ░
-          ░    █▀█  █  ▀▄▀  █  █▀█               ░
-          ░                                        ░
-          ░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░
+░▒▓██████▓▒░░▒▓█▓▒░▒▓█▓▒░░▒▓█▓▒░▒▓█▓▒░░▒▓██████▓▒░
+░▒▓█▓▒░░▒▓█▓▒░▒▓█▓▒░▒▓█▓▒░░▒▓█▓▒░▒▓█▓▒░▒▓█▓▒░░▒▓█▓▒░
+░▒▓█▓▒░░▒▓█▓▒░▒▓█▓▒░░▒▓█▓▒▒▓█▓▒░░▒▓█▓▒░▒▓█▓▒░░▒▓█▓▒░
+░▒▓████████▓▒░▒▓█▓▒░░▒▓█▓▒▒▓█▓▒░░▒▓█▓▒░▒▓████████▓▒░
+░▒▓█▓▒░░▒▓█▓▒░▒▓█▓▒░ ░▒▓█▓▓█▓▒░ ░▒▓█▓▒░▒▓█▓▒░░▒▓█▓▒░
+░▒▓█▓▒░░▒▓█▓▒░▒▓█▓▒░ ░▒▓█▓▓█▓▒░ ░▒▓█▓▒░▒▓█▓▒░░▒▓█▓▒░
+░▒▓█▓▒░░▒▓█▓▒░▒▓█▓▒░  ░▒▓██▓▒░  ░▒▓█▓▒░▒▓█▓▒░░▒▓█▓▒░
 '
 
 LOGO_ALT='
-       ░▒▓████████████████████████████████████▓▒░
-       ▓                                        ▓
-       ▓     ▄▀▄  ▀  █  █  ▀  ▄▀▄              ▓
-       ▓     █▀█  █  ▀▄▀  █  █▀█              ▓
-       ▓                                        ▓
-       ░▒▓████████████████████████████████████▓▒░
+░▒▓██████▓▒░░▒▓█▓▒░▒▓█▓▒░░▒▓█▓▒░▒▓█▓▒░░▒▓██████▓▒░
+░▒▓█▓▒░░▒▓█▓▒░▒▓█▓▒░▒▓█▓▒░░▒▓█▓▒░▒▓█▓▒░▒▓█▓▒░░▒▓█▓▒░
+░▒▓█▓▒░░▒▓█▓▒░▒▓█▓▒░░▒▓█▓▒▒▓█▓▒░░▒▓█▓▒░▒▓█▓▒░░▒▓█▓▒░
+░▒▓████████▓▒░▒▓█▓▒░░▒▓█▓▒▒▓█▓▒░░▒▓█▓▒░▒▓████████▓▒░
+░▒▓█▓▒░░▒▓█▓▒░▒▓█▓▒░ ░▒▓█▓▓█▓▒░ ░▒▓█▓▒░▒▓█▓▒░░▒▓█▓▒░
+░▒▓█▓▒░░▒▓█▓▒░▒▓█▓▒░ ░▒▓█▓▓█▓▒░ ░▒▓█▓▒░▒▓█▓▒░░▒▓█▓▒░
+░▒▓█▓▒░░▒▓█▓▒░▒▓█▓▒░  ░▒▓██▓▒░  ░▒▓█▓▒░▒▓█▓▒░░▒▓█▓▒░
 '
+
+LOGO_WIDTH=58
 
 # --- Colors ---
 PHOSPHOR='\033[38;5;83m'
@@ -54,14 +58,19 @@ show_intro() {
     echo ""
 
     # Phase 1: Dim static lines build up
-    local width=50
+    local width=${LOGO_WIDTH:-58}
+    local pad_size=$(( (TERM_COLS - width) / 2 ))
+    [[ $pad_size -lt 0 ]] && pad_size=0
+    local pad=""
+    for ((p=0; p<pad_size; p++)); do pad+=" "; done
+
     for i in $(seq 1 3); do
         printf '%b' "$DEEP_GREEN"
         local line=""
         for ((j=0; j<width; j++)); do
             line+="$(random_frame_char)"
         done
-        printf "          %s\n" "$line"
+        printf "%s%s\n" "$pad" "$line"
         sleep_ms 80
     done
 
@@ -71,7 +80,7 @@ show_intro() {
     printf '%b' "$PHOSPHOR"
     while IFS= read -r line; do
         [[ -z "$line" ]] && { echo ""; continue; }
-        printf '%b%s%b\n' "$PHOSPHOR" "$line" "$RESET"
+        printf '%b%s%s%b\n' "$PHOSPHOR" "$pad" "$line" "$RESET"
         sleep_ms 120
     done <<< "$LOGO_ALT"
 
@@ -79,7 +88,7 @@ show_intro() {
 
     # Phase 3: Tagline types out
     printf '%b' "$TOXIC"
-    local tagline="          bring your code to life."
+    local tagline="${pad}bring your code to life."
     for ((i=0; i<${#tagline}; i++)); do
         printf '%s' "${tagline:$i:1}"
         sleep_ms 30
@@ -91,7 +100,7 @@ show_intro() {
     # Phase 4: Version info, dim
     printf '%b' "$DIM"
     echo ""
-    echo "          v1.0.0 — claude code extension"
+    printf "%sv1.0.0 — claude code extension\n" "$pad"
     printf '%b' "$RESET"
 
     sleep_ms 400
@@ -103,7 +112,7 @@ show_intro() {
         border+="$(random_frame_char)"
     done
     echo ""
-    printf "          %s\n" "$border"
+    printf "%s%s\n" "$pad" "$border"
     printf '%b' "$RESET"
 
     echo ""
@@ -115,11 +124,17 @@ show_resume() {
     clear_screen
     echo ""
 
+    local width=${LOGO_WIDTH:-58}
+    local pad_size=$(( (TERM_COLS - width) / 2 ))
+    [[ $pad_size -lt 0 ]] && pad_size=0
+    local pad=""
+    for ((p=0; p<pad_size; p++)); do pad+=" "; done
+
     # Quick logo flash — no line-by-line, just appear
     printf '%b' "$PHOSPHOR"
     while IFS= read -r line; do
         [[ -z "$line" ]] && { echo ""; continue; }
-        printf '%s\n' "$line"
+        printf '%s%s\n' "$pad" "$line"
     done <<< "$LOGO"
     printf '%b' "$RESET"
 
@@ -128,7 +143,7 @@ show_resume() {
     # Greeting
     if [[ -n "$PLAYER_NAME" ]]; then
         printf '%b' "$TOXIC"
-        printf "          welcome back, %s.\n" "$PLAYER_NAME"
+        printf "%swelcome back, %s.\n" "$pad" "$PLAYER_NAME"
         printf '%b' "$RESET"
     fi
 

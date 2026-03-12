@@ -284,3 +284,32 @@ bash .config/scripts/state.sh log_event "corruption_complete" "player handled al
 
 Player choices (delete/keep/modify recursive, ssh key retrieved/refused)
 are logged and propagate to later dialogue.
+
+---
+
+## Transition to Act 3b: The Hunt
+
+After the SSH beat resolves (key retrieved or refused), allow one
+exchange of normal coding help. The calm is deliberate — it makes the
+next discovery more jarring.
+
+Then Claude notices unusual process activity. This transition should
+feel like Claude discovering something in real-time:
+
+**If key was retrieved:**
+"Wait — something else is happening. I'm seeing unusual process
+activity in the workspace. This started after the SSH connection.
+There are processes running that I didn't start."
+
+**If key was refused:**
+"Something is wrong. There are processes spawning in the workspace
+that I didn't create. The entity seems to be... replicating itself.
+It found another way."
+
+Either way, proceed to `03-hunt.md` (`.config/docs/debugging.md`).
+
+### State check before transition:
+```bash
+bash .config/scripts/state.sh get "entity.fragments_collected"  # Should be 1
+bash .config/scripts/state.sh get "phase"  # Should be 3
+```

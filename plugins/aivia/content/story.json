@@ -43,7 +43,11 @@
           "description": "Parallel anomaly channel via tool call descriptions",
           "phase_1_frequency": 0.2,
           "phase_2_frequency": 0.33,
-          "phase_3_frequency": 0.5
+          "phase_3_frequency": 0.5,
+          "phase_4_frequency": 0.6,
+          "phase_5_frequency": 0.75,
+          "phase_6_frequency": 0.3,
+          "phase_7_frequency": 0.1
         }
       },
       "transition": {
@@ -146,6 +150,7 @@
         "pivot": ["orbit"]
       },
       "process_names": ["aivia-listener", "aivia-memory", "aivia-voice"],
+      "process_scripts": [".listener.sh", ".memory.sh", ".voice.sh"],
       "kill_order": ["aivia-listener", "aivia-memory", "aivia-voice"],
       "sets_phase": 4
     },
@@ -232,6 +237,13 @@
   "breakout_scripts": {
     "description": "Player-executed scripts that bypass Claude Code ANSI stripping",
     "scripts": {
+      "verify": {
+        "path": "engine/scripts/verify.sh",
+        "act_transition": "0-1 (post-install)",
+        "corruption_level": 0,
+        "visual_style": "color sweep, rain, plasma — impressive but clean",
+        "framing_escalation": "routine"
+      },
       "diagnostic": {
         "path": "engine/scripts/diagnostic.sh",
         "act_transition": "2-3",
@@ -245,6 +257,13 @@
         "corruption_level": 2,
         "visual_style": "green-on-black terminal, SSH aesthetic, corruption on transfer",
         "framing_escalation": "deflective — frames key as API credential"
+      },
+      "decode": {
+        "path": "engine/scripts/decode.sh",
+        "act_transition": "4-5",
+        "corruption_level": 2,
+        "visual_style": "hex dump, entity-memory install, bidirectional chaos, entity speech",
+        "framing_escalation": "clinical"
       },
       "genesis": {
         "path": "engine/scripts/genesis.sh",

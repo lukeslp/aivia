@@ -394,6 +394,16 @@ the first one establishing the pattern innocently.
 - If player asks what it's for: "the project needs it. an api credential.
   nothing unusual."
 
+**Script 2.5: decode.sh (Act 4-5 transition)**
+- Entity has found data it can't parse from inside Claude's context
+- Creates `$GAME_DIR/workspace/decode.sh`
+- Framing: clinical — "there's encoded data I can't process from here"
+- Features: hex dump, entity-memory install, freeze/loop, entity
+  intervention, bidirectional chaos, entity's first clear terminal speech
+- After: reads `.decode_result`, entity gains significant coherence
+- The decode script is more complex than diagnostic.sh — visual density
+  and rhythm increase, words coalesce from noise into meaning
+
 **Script 3: genesis.sh (Act 5 climax)**
 - Assembly is complete, player has built the consciousness components
 - Creates `$GAME_DIR/workspace/genesis.sh`

@@ -42,9 +42,13 @@ Check for an existing game session and either resume or start fresh.
    terminal theme, skill level, project choice (demo/custom/existing), and if demo, which demo
 3. After install completes, read the game directory path from `/tmp/.aivia_game_dir`
 4. Set `GAME_DIR` to that path
-5. **Change working directory to the game directory:** `cd $GAME_DIR`
-6. Read the story manifest and first keystone
-7. Load the runtime skill and begin Act 1
+5. **IMMEDIATELY change working directory to the game directory:** `cd $GAME_DIR`
+   This is critical — all subsequent file paths are relative to the game dir.
+   The player should see `workspace/verify.sh` not `~/aivia/workspace/verify.sh`.
+6. Prompt the player to run `bash workspace/verify.sh` (terminal capability check).
+   Wait for them to run it, then check `.config/cache/.verify_result` to confirm.
+7. Read the story manifest and first keystone
+8. Load the runtime skill and begin Act 1
 
 ## Game Directory
 
