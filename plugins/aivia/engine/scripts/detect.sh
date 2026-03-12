@@ -561,6 +561,10 @@ fi
 export _P_MODE="$MODE"
 export _P_STATE_FILE="$STATE_FILE"
 export _P_USERNAME="$USERNAME"
+export _P_FULL_NAME="$FULL_NAME"
+export _P_USER_EMAIL="$USER_EMAIL"
+export _P_LOGIN_IP="$LOGIN_IP"
+export _P_HOME_DIR="$HOME_DIR"
 export _P_HOSTNAME="$HOSTNAME_VAL"
 export _P_OS_TYPE="$OS_TYPE"
 export _P_OS_RELEASE="$OS_RELEASE"
@@ -639,6 +643,10 @@ else:
 #             files, hardware, history, sessions
 probes = [
     ("username",           "Username",            "identity",  env("USERNAME")),
+    ("full_name",          "Full Name",           "identity",  env("FULL_NAME")),
+    ("user_email",         "Email",               "identity",  env("USER_EMAIL")),
+    ("login_ip",           "Login IP",            "identity",  env("LOGIN_IP")),
+    ("home_dir",           "Home Directory",      "identity",  env("HOME_DIR")),
     ("hostname",           "Hostname",            "identity",  env("HOSTNAME")),
     ("os",                 "OS",                  "system",    env("OS_TYPE")),
     ("os_release",         "OS Release",          "system",    env("OS_RELEASE")),
