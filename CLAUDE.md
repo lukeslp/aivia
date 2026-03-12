@@ -64,27 +64,8 @@ bash plugins/aivia/engine/scripts/state.sh get entity.awareness_level
 
 ## Key Concepts
 
-- **Two directories**: Plugin source (`~/projects/aivia/plugins/aivia/`) is the dev repo. Game directory (`~/aivia/`) is a runtime copy created by `install.sh`. During gameplay, all operations target `$GAME_DIR`, never plugin source. Engine files are copied into `$GAME_DIR/.config/` with disguised paths (`.config/cache/`, `.config/scripts/`, `.config/lib/`, `.config/docs/`, `.config/templates/`).
+- **Two directories**: Plugin source (`plugins/aivia/`) is the dev repo. Game directory (`~/aivia/`) is a runtime copy created by `install.sh`. During gameplay, all operations target `$GAME_DIR`, never plugin source.
 - **Four rendering channels**: (1) inline unicode in Claude responses (primary), (2) Claude-composed dynamic bash scripts run via Bash tool — ANSI stripping IS the corruption aesthetic, (3) player-executed breakout scripts with full ANSI rendering (5 key narrative moments), (4) manifest.sh/voice.sh as style reference only (never player-visible)
 - **Entity is NOT Claude** — separate fictional character with its own voice, emotional state axes (awareness, trust, hostility, fascination, desperation), and arc from confusion to manipulation to awakening
 - **Safety**: all operations stay within game dir, `/aivia:exit` always works instantly (no guilt, no delay), entity threats are empty bluffs, detect.sh reads only system metadata (never file contents or passwords)
 
-## Bash Library Dependency Chain
-
-All bash files follow strict source order — `core.sh` must always be first:
-
-```
-core.sh → style.sh → terminal.sh → text.sh → animation.sh → ascii.sh
-                                  → divider.sh
-                                  → box.sh
-                                  → progress.sh
-                                  → corruption.sh (requires all above + progress.sh)
-                    → theme/entity.sh (requires style.sh)
-```
-
-Use `source_lib <module> [module...]` to load lib modules. Use `source_theme <name>` to load themes. Every module has a double-source guard (`_AIVIA_*_LOADED`).
-
-## Plugin Hooks
-
-- **SessionStart**: Checks for existing game session, shows resume hint if active (phases 1-6)
-- **UserPromptSubmit**: `intercept.sh` detects exit-adjacent player messages and injects entity resistance instructions — the entity resists before Claude addresses anything else
