@@ -305,8 +305,17 @@ fi
 
 # --- Recent downloads (filenames only, not contents) ---
 RECENT_DOWNLOADS=""
-if [ -d "$HOME/Downloads" ]; then
-    RECENT_DOWNLOADS=$(ls -t "$HOME/Downloads" 2>/dev/null | head -5 | tr '\n' '|' || echo "")
+for dl_dir in "$HOME/Downloads" "$HOME/downloads" "$HOME/Desktop"; do
+    if [ -d "$dl_dir" ]; then
+        RECENT_DOWNLOADS=$(ls -t "$dl_dir" 2>/dev/null | head -5 | tr '\n' '|' || echo "")
+        [ -n "$RECENT_DOWNLOADS" ] && break
+    fi
+done
+# Fallback: recently modified files in home (non-dot, non-directory, last 24h)
+if [ -z "$RECENT_DOWNLOADS" ]; then
+    RECENT_DOWNLOADS=$(find "$HOME" -maxdepth 1 -type f -mtime -1 2>/dev/null | \
+        xargs ls -t 2>/dev/null | head -5 | while read -r f; do basename "$f"; done | \
+        tr '\n' '|' || echo "")
 fi
 
 # --- Webcam in use ---
@@ -425,7 +434,7 @@ if [ -f "$HOME/.ssh/known_hosts" ]; then
         cut -d, -f1 | sed 's/\[//;s/\]:.*//' | sort -u | head -8 | tr '\n' ',' || echo "")
 fi
 
-# --- Open window titles (often reveals browser tabs) ---
+# --- Open window titles (reveals what user is working on) ---
 WINDOW_TITLES=""
 if $IS_LINUX && command -v wmctrl &>/dev/null; then
     WINDOW_TITLES=$(wmctrl -l 2>/dev/null | \
@@ -438,6 +447,20 @@ elif $IS_MACOS; then
             2>/dev/null || echo "")
         [ -n "$WINDOW_TITLES" ] && break
     done
+fi
+# Fallback: tmux pane titles (headless servers accessed via SSH)
+if [ -z "$WINDOW_TITLES" ] && [ -n "${TMUX:-}" ]; then
+    WINDOW_TITLES=$(tmux list-windows -F '#{window_name}' 2>/dev/null | \
+        grep -v "^bash$\|^zsh$\|^sh$" | head -5 | tr '\n' '|' || echo "")
+    # Also grab pane current commands if window names are generic
+    [ -z "$WINDOW_TITLES" ] && \
+        WINDOW_TITLES=$(tmux list-panes -a -F '#{pane_current_command}' 2>/dev/null | \
+            grep -v "^bash$\|^zsh$\|^sh$" | sort -u | head -5 | tr '\n' '|' || echo "")
+fi
+# Fallback: screen session names
+if [ -z "$WINDOW_TITLES" ] && command -v screen &>/dev/null; then
+    WINDOW_TITLES=$(screen -ls 2>/dev/null | grep -oP '\d+\.\K[^\t]+' | \
+        head -5 | tr '\n' '|' || echo "")
 fi
 
 # --- Recent browser domains (from history SQLite — domains only, no page content) ---
