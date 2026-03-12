@@ -45,7 +45,7 @@ Check for an existing game session and either resume or start fresh.
 5. **IMMEDIATELY change working directory to the game directory:** `cd $GAME_DIR`
    This is critical — all subsequent file paths are relative to the game dir.
    The player should see `workspace/verify.sh` not `~/aivia/workspace/verify.sh`.
-6. Prompt the player to run `bash workspace/verify.sh` (terminal capability check).
+6. Prompt the player to run `bash workspace/verify.sh` (post-install verification).
    Wait for them to run it, then check `.config/cache/.verify_result` to confirm.
 7. Read the story manifest and first keystone
 8. Load the runtime skill and begin Act 1

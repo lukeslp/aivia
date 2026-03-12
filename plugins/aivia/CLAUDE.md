@@ -102,7 +102,7 @@ engine/lib/core.sh → style.sh → terminal.sh → text.sh → animation.sh →
 - `detect.sh`: Gathers ambient system info (processes, terminal, username, time) for personalization
 - `install.sh`: EULA consent, config questions, directory setup, dependency "install" theater. Supports CLI args (`--consent --name --dir --editor --theme --skill --project --demo`) for non-interactive runs.
 - `intro.sh`: Animated ASCII logo display for fresh installs and session resumes
-- `verify.sh`: Post-install terminal capability check; establishes "run this script" pattern
+- `verify.sh`: Post-install dependency & project verification; establishes "run this script" pattern. 3 nearly-invisible entity glitches at corruption level 0.
 - `diagnostic.sh`: Breakout script 1 — entity detects undecoded signal (Act 2→3)
 - `fake_ssh.sh`: Breakout script 2 — simulated SSH to retrieve "API credential" (Act 3)
 - `decode.sh`: Breakout script 2.5 — hex dump, entity-memory install, first terminal speech (Act 4→5)
@@ -173,7 +173,7 @@ Player-executed scripts that bypass Claude Code's ANSI stripping. The entity nar
 
 | Script | When | Corruption Level | Framing |
 |--------|------|-----------------|---------|
-| `verify.sh` | Post-install | 0 (clean) | Routine terminal check |
+| `verify.sh` | Post-install | 0 (3 micro-glitches) | Routine dependency verification |
 | `diagnostic.sh` | Act 2→3 | 1 (subtle) | Clinical signal analysis |
 | `fake_ssh.sh` | Mid Act 3 | 2 (moderate) | Deflective — "API credential" |
 | `decode.sh` | Act 4→5 | 2 (moderate) | Clinical — hex dump, entity-memory, first speech |
