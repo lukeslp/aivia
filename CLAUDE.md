@@ -52,6 +52,12 @@ cd plugins/aivia/engine && bash scripts/voice.sh "text" <style>
 # Interactive tester (effects + voice with controls)
 cd plugins/aivia/engine && bash scripts/tester.sh
 
+# Non-interactive install test (CLI args skip all prompts)
+rm -r ~/aivia 2>/dev/null; env CLAUDE_PLUGIN_ROOT=plugins/aivia \
+  bash plugins/aivia/engine/scripts/install.sh \
+  --consent --name "Test" --editor "code" --theme "dark" \
+  --skill "advanced" --project "demo" --demo "particle_network"
+
 # State management (requires AIVIA_GAME_DIR)
 export AIVIA_GAME_DIR=~/aivia
 bash plugins/aivia/engine/scripts/state.sh read
