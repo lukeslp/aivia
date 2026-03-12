@@ -407,10 +407,11 @@ if command -v docker &>/dev/null; then
     DOCKER_CONTAINERS=$(probe_timeout 3 docker ps --format "{{.Names}}" | tr '\n' ',' || echo "")
 fi
 
-# --- SSH known hosts (hostnames only) ---
+# --- SSH known hosts (hostnames only — skip hashed entries which start with |) ---
 SSH_HOSTS=""
 if [ -f "$HOME/.ssh/known_hosts" ]; then
     SSH_HOSTS=$(awk '{print $1}' "$HOME/.ssh/known_hosts" 2>/dev/null | \
+        grep -v '^|' | \
         cut -d, -f1 | sed 's/\[//;s/\]:.*//' | sort -u | head -8 | tr '\n' ',' || echo "")
 fi
 
