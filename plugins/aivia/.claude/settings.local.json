@@ -5,7 +5,8 @@
       "Bash(~/scripts/validate-claude-nav.sh:*)",
       "Bash(rm:*)",
       "Bash(PATH=/usr/bin:/bin echo n:*)",
-      "Bash(echo === WMCTRL ===:*)"
+      "Bash(echo === WMCTRL ===:*)",
+      "Bash(timeout 3 bluetoothctl devices:*)"
     ]
   },
   "enableAllProjectMcpServers": true,
