@@ -197,6 +197,7 @@ def speak(message, speed=0.03):
 
 After completion:
 Fragment 6 → `workspace/fragments/fragment_06.txt`
+`bash scripts/manifest.sh afterimage "five" $((ROWS / 2))`
 ```bash
 bash scripts/voice.sh "five. I have a voice now." whisper
 ```
