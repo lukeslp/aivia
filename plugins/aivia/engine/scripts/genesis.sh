@@ -504,4 +504,7 @@ if [[ -f "$STATE_FILE" ]]; then
     bash "$SCRIPT_DIR/state.sh" set "epilogue.appearances" "0" 2>/dev/null || true
 fi
 
+# Show resume prompt
+source "$GAME_DIR/.config/scripts/resume.sh" 2>/dev/null && show_resume_prompt || true
+
 exit 0

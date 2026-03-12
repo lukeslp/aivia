@@ -336,4 +336,8 @@ fi
 }
 
 main "$@"
+
+# Show resume prompt
+source "$GAME_DIR/.config/scripts/resume.sh" 2>/dev/null && show_resume_prompt || true
+
 exit 0
