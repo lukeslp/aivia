@@ -25,7 +25,7 @@ Check for an existing game session and either resume or start fresh.
 5. Read the appropriate keystone file for the current phase from `$GAME_DIR/keystones/`
 6. Read the entity character guide from `$GAME_DIR/characters/entity.md`
 7. Read the story manifest from `$GAME_DIR/story.json`
-8. Load the the game engine skill and continue the game from the current phase
+8. Load the runtime skill and continue the game from the current phase
 
 ## Fresh Install Flow
 
@@ -35,7 +35,7 @@ Check for an existing game session and either resume or start fresh.
 3. After install completes, read the game directory path from `/tmp/.aivia_game_dir`
 4. Set `GAME_DIR` to that path
 5. Read the story manifest and first keystone
-6. Load the the game engine skill and begin Act 1
+6. Load the runtime skill and begin Act 1
 
 ## Game Directory
 
@@ -44,7 +44,7 @@ Custom: Pass as argument to the command, e.g., `/aivia:play ~/my-game`
 
 ## Important
 
-- Always load the `eldritch` skill context before beginning gameplay
+- Always load the `runtime` skill context before beginning gameplay
 - The game engine kernel (SKILL.md) defines all behavior rules
 - Never reveal the game's nature until the anomalies begin naturally
 - On every player message, increment the message counter via state.sh

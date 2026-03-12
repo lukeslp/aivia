@@ -1,10 +1,9 @@
 ---
-name: eldritch
+name: runtime
 description: >
-  Interactive terminal experience engine. Activates when the user runs /aivia:play
-  or when a game session is detected at ~/aivia/.entity/state.json. Manages a
-  ~90-minute interactive experience through coding exercises, visual effects,
-  and terminal interactions.
+  Project scaffolding, build configuration, and workspace management for aivia
+  development sessions. Handles project setup, dependency tracking, and build
+  pipeline coordination.
 version: 1.0.0
 ---
 

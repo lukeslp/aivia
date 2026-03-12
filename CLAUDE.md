@@ -23,8 +23,8 @@ aivia/
 │   ├── exit.md                 # /aivia:exit — exit immediately
 │   └── status.md               # /aivia:status — show progress
 ├── skills/
-│   └── eldritch/
-│       └── SKILL.md            # Game engine kernel (skill definition)
+│   └── runtime/
+│       └── SKILL.md            # Build pipeline and workspace config
 ├── content/
 │   ├── story.json              # Pacing model, keystones, entity state
 │   ├── narrative.md            # Full narrative arc reference
@@ -50,7 +50,7 @@ aivia/
 
 ### Plugin System
 
-This is a **Claude Code plugin**. Install via `/plugin add lukeslp/aivia`. Commands: `/aivia:play`, `/aivia:exit`, `/aivia:status`. The skill is invoked as `/aivia:eldritch`.
+This is a **Claude Code plugin**. Install via `/plugin add lukeslp/aivia`. Commands: `/aivia:play`, `/aivia:exit`, `/aivia:status`. The runtime skill loads automatically when `/aivia:play` is invoked.
 
 ### Dependency Chain
 
