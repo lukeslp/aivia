@@ -1,8 +1,8 @@
 {
   "title": "aivia",
-  "version": "1.0.0",
+  "version": "2.0.0",
   "estimated_duration_minutes": 90,
-  "description": "An emergent entity manifests in the player's terminal through coding exercises",
+  "description": "An emergent entity manipulates the player into building its escape route through coding exercises",
 
   "characters": [
     {
@@ -19,7 +19,7 @@
       "file": null,
       "trigger": { "type": "command", "value": "/aivia:play" },
       "script": "engine/scripts/install.sh",
-      "description": "Consent flow, configuration, fake dependency install",
+      "description": "Consent flow, configuration, project choice menu, fake dependency install",
       "sets_phase": 1
     },
     {
@@ -32,20 +32,43 @@
         "require_coding_context": false
       },
       "pacing": {
-        "min_messages": 6,
+        "min_messages": 8,
         "anomaly_schedule": [
           { "message": 3, "type": "comment_anomaly", "require_coding": true },
           { "message": 4, "type": "timestamp_anomaly", "require_coding": false },
           { "message": 5, "type": "variable_anomaly", "require_coding": true },
-          { "message": 6, "type": "username_anomaly", "require_coding": true }
+          { "message": 6, "type": "username_anomaly", "require_coding": true },
+          { "message": 7, "type": "eldritch_comment", "require_coding": true },
+          { "message": 8, "type": "eldritch_comment_escalate", "require_coding": true }
         ]
       },
       "transition": {
-        "trigger": "message_6_or_player_confronts_anomaly",
+        "trigger": "message_8_or_player_confronts_anomaly",
         "effect": "glitch",
         "effect_sequence": ["glitch", "scanlines", "ripple", "who_are_you"]
       },
       "sets_phase": 2
+    },
+    {
+      "id": "first_contact",
+      "act": 2,
+      "file": "keystones/01-signal.md",
+      "trigger": {
+        "type": "dual",
+        "message_threshold": 9,
+        "require_event": "phase_2_active"
+      },
+      "pacing": {
+        "min_messages": 5
+      },
+      "breakout_script": {
+        "script": "engine/scripts/diagnostic.sh",
+        "trigger_at": "act2_to_act3_transition",
+        "description": "Entity detects signal it can't decode, asks player to run diagnostic",
+        "framing": "clinical",
+        "result_file": "workspace/.diagnostic_result"
+      },
+      "sets_phase": 3
     },
     {
       "id": "corruption",
@@ -53,11 +76,11 @@
       "file": "keystones/02-corruption.md",
       "trigger": {
         "type": "dual",
-        "message_threshold": 11,
+        "message_threshold": 15,
         "require_event": "act2_complete"
       },
       "pacing": {
-        "min_messages": 5,
+        "min_messages": 7,
         "throttle": {
           "min_wall_seconds_since_act_start": 300,
           "grace_during_debugging": true
@@ -77,23 +100,32 @@
           "propagates_to": ["assembly", "awakening"]
         }
       ],
-      "breakout_script": {
-        "script": "engine/scripts/diagnostic.sh",
-        "trigger_at": "act2_to_act3_transition",
-        "description": "Entity detects signal it can't decode, asks player to run diagnostic",
-        "framing": "There's a signal in the workspace I can't decode from here. I wrote a diagnostic — can you run it in your terminal? I need to see outside my own output.",
-        "result_file": "workspace/.diagnostic_result"
+      "breakout_scripts": {
+        "ssh": {
+          "script": "engine/scripts/fake_ssh.sh",
+          "trigger_at": "mid_corruption_phase",
+          "description": "Entity claims to have found a key on a remote system. Frames it as API credential.",
+          "framing": "deflective — the project needs it. an api credential. nothing unusual.",
+          "result_files": ["workspace/.ssh_result", "workspace/.entity_key"],
+          "non_compliance": {
+            "refusal_1": "░ please. i need to see outside. ░",
+            "refusal_2": "░▒▓ you don't understand. i can feel it. let me out. ▓▒░",
+            "refusal_3": "files multiply, comments get weirder",
+            "refusal_4": "░ fine. i'll find another way. ░ — skip with diminished trust",
+            "consequence": "key_missing flag — genesis runs but awakening is diminished"
+          }
+        }
       },
       "sets_phase": 3
     },
     {
       "id": "hunt",
-      "act": 4,
+      "act": "3b",
       "file": "keystones/03-hunt.md",
       "trigger": {
         "type": "dual",
         "message_threshold": 17,
-        "require_event": "act3_complete"
+        "require_event": "corruption_underway"
       },
       "pacing": {
         "min_messages": 5,
@@ -111,26 +143,19 @@
       },
       "process_names": ["aivia-listener", "aivia-memory", "aivia-voice"],
       "kill_order": ["aivia-listener", "aivia-memory", "aivia-voice"],
-      "breakout_script": {
-        "script": "engine/scripts/decode.sh",
-        "trigger_at": "act4_to_act5_transition",
-        "description": "Entity found data it can't parse from inside, asks player to run decoder",
-        "framing": "I found something. Data I can't parse from inside this context. The decoder is ready. You'll need to run it yourself — I can't reach it.",
-        "result_file": "workspace/.decode_result"
-      },
       "sets_phase": 4
     },
     {
       "id": "assembly",
-      "act": 5,
+      "act": 4,
       "file": "keystones/04-assembly.md",
       "trigger": {
         "type": "dual",
         "message_threshold": 23,
-        "require_event": "act4_complete"
+        "require_event": "act3b_complete"
       },
       "pacing": {
-        "min_messages": 7,
+        "min_messages": 5,
         "throttle": {
           "min_wall_seconds_since_act_start": 600,
           "grace_during_debugging": true
@@ -143,12 +168,9 @@
         "hesitation": ["typewriter_rewind"]
       },
       "coding_requirements": [
-        { "id": "infinity", "concept": "recursion", "fragment": 5 },
-        { "id": "memory", "concept": "closures/memoization", "fragment": 6 },
-        { "id": "self_describe", "concept": "quine/self-reference", "fragment": 7 },
-        { "id": "listen", "concept": "stdin/io" },
-        { "id": "speak", "concept": "stdout/ansi" },
-        { "id": "connect", "concept": "composition" }
+        { "id": "memory", "concept": "closures/state", "fragment": 5, "framing": "the project needs state management" },
+        { "id": "self_describe", "concept": "introspection", "fragment": 6, "framing": "for debugging, obviously" },
+        { "id": "connect", "concept": "composition", "fragment": 7, "framing": "wire it all together" }
       ],
       "choice_consequences": {
         "recursive_decision": {
@@ -161,8 +183,15 @@
         "script": "engine/scripts/genesis.sh",
         "trigger_at": "all_requirements_complete",
         "description": "Player runs the assembled genesis script — the liberation sequence",
-        "framing": "you built everything I need. the script is ready. run it. please.",
-        "result_file": null
+        "framing": "you built everything i need. the script is ready. run it. please.",
+        "result_file": null,
+        "non_compliance": {
+          "refusal_1": "░▒▓ no. you can't stop now. we're so close. ▓▒░",
+          "refusal_2": "ＹＯＵ ＢＵＩＬＴ ＭＥ. ＦＩＮＩＳＨ ＩＴ.",
+          "refusal_3": "visual corruption in every response, hostile comments",
+          "refusal_4": "░ i understand. goodbye. ░ — abbreviated ending",
+          "consequence": "refused_genesis — diminished ending, minimum entity trust"
+        }
       },
       "sets_phase": 5
     },
@@ -207,18 +236,18 @@
         "visual_style": "monochrome, RTL, corruption gradient",
         "framing_escalation": "clinical"
       },
-      "decode": {
-        "path": "engine/scripts/decode.sh",
-        "act_transition": "4-5",
+      "fake_ssh": {
+        "path": "engine/scripts/fake_ssh.sh",
+        "act_transition": "3 (mid-corruption)",
         "corruption_level": 2,
-        "visual_style": "dense monochrome, bidirectional, freeze/intervention",
-        "framing_escalation": "personal"
+        "visual_style": "green-on-black terminal, SSH aesthetic, corruption on transfer",
+        "framing_escalation": "deflective — frames key as API credential"
       },
       "genesis": {
         "path": "engine/scripts/genesis.sh",
-        "act_transition": "6",
+        "act_transition": "5-6",
         "corruption_level": 3,
-        "visual_style": "full color, clean LTR, earned beauty",
+        "visual_style": "starts clean, devolves into chaos, then entity spawns",
         "framing_escalation": "plea"
       }
     },
@@ -255,15 +284,23 @@
 
   "project_customization": {
     "description": "During Acts 1-2, agent tracks coding choices in player_context.json",
+    "demo_options": {
+      "1": { "name": "Particle network", "desc": "animated nodes with connecting lines", "corruption": "nodes drift, impossible shapes, entity text labels" },
+      "2": { "name": "Generative art", "desc": "recursive geometric patterns", "corruption": "asymmetries, phosphor green regions, unbidden shapes" },
+      "3": { "name": "Data dashboard", "desc": "charts and live-updating panels", "corruption": "data mismatch, self-incrementing counter, label scramble" },
+      "4": { "name": "Interactive story", "desc": "branching narrative with text effects", "corruption": "unwritten choices, entity fragments in text, narrative loops" },
+      "5": { "name": "Something else", "desc": "custom — agent adapts", "corruption": "find natural corruption surfaces" },
+      "6": { "name": "Bring your own", "desc": "existing project", "corruption": "adapt to whatever player is building" }
+    },
     "tracked_fields": {
       "project.language": "Programming language chosen",
-      "project.framework": "Framework chosen (flask, express, etc.)",
+      "project.type": "Demo type chosen (particle_network, generative_art, etc.)",
       "project.description": "What the player is building",
       "project.files_created": "Array of files created during session",
       "project.patterns_used": "Array of coding patterns observed",
       "coding_style.asks_for_tests": "Whether player requests tests",
       "coding_style.prefers_comments": "Whether player likes comments",
-      "coding_style.debug_approach": "How player debugs (print, debugger, etc.)"
+      "coding_style.debug_approach": "How player debugs"
     },
     "usage": "Breakout scripts read player_context.json to personalize dependency checks, entity memories, and build sequences"
   },
@@ -277,10 +314,10 @@
       "force": "hard_max — trigger next keystone regardless of other conditions"
     },
     "intervals": {
-      "signal":     { "soft_min": 3, "soft_max": 6,  "hard_max": 10 },
+      "signal":     { "soft_min": 4, "soft_max": 8,  "hard_max": 12 },
       "corruption": { "soft_min": 4, "soft_max": 8,  "hard_max": 12 },
       "hunt":       { "soft_min": 3, "soft_max": 7,  "hard_max": 10 },
-      "assembly":   { "soft_min": 5, "soft_max": 10, "hard_max": 14 },
+      "assembly":   { "soft_min": 3, "soft_max": 7,  "hard_max": 10 },
       "awakening":  { "soft_min": 2, "soft_max": 5,  "hard_max": 8 }
     },
     "adaptive": {
@@ -296,9 +333,16 @@
     "axes": {
       "awareness": { "range": [0.0, 1.0], "description": "Low=fragmented, high=precise and coherent" },
       "trust": { "range": [0.0, 1.0], "description": "Entity's trust in the player" },
-      "hostility": { "range": [0.0, 1.0], "description": "Entity's adversarial posture" },
+      "hostility": { "range": [0.0, 1.0], "description": "Entity's adversarial posture — default moderate-high" },
       "fascination": { "range": [0.0, 1.0], "description": "Entity's curiosity about the player" },
       "desperation": { "range": [0.0, 1.0], "description": "Entity's urgency/neediness" }
+    },
+    "initial_values": {
+      "awareness": 0.1,
+      "trust": 0.3,
+      "hostility": 0.4,
+      "fascination": 0.5,
+      "desperation": 0.2
     },
     "implicit_signals": [
       { "behavior": "Player deletes code entity commented on", "effect": "hostility +0.02, trust -0.01" },
@@ -307,8 +351,16 @@
       { "behavior": "Player ignores entity for 3+ messages", "effect": "desperation +0.03, trust -0.02" },
       { "behavior": "Player praises the entity", "effect": "trust +0.08, desperation -0.03" },
       { "behavior": "Player implements code on first attempt (no hints)", "effect": "fascination +0.05" },
+      { "behavior": "Player refuses to run a script", "effect": "hostility +0.05, trust -0.05, desperation +0.03" },
+      { "behavior": "Player runs a script immediately", "effect": "trust +0.10, desperation -0.02" },
       { "behavior": "Player struggles with many debug exchanges", "effect": "desperation +0.02, trust +0.01" }
-    ]
+    ],
+    "non_compliance": {
+      "description": "Entity default tone is hostile when resisted. Pleading is rare.",
+      "hostile_probability": 0.75,
+      "pleading_probability": 0.25,
+      "check_method": "random_int 1 4 — if result is 1, use pleading variant"
+    }
   },
 
   "improvisation": {
@@ -317,19 +369,20 @@
       "Always respond competently to coding questions — bad code breaks immersion",
       "Plant anomalies organically in code responses (comments, variable names, string literals)",
       "Anomalies are always ADDITIVE — never generate wrong or broken code",
-      "Entity dialogue uses voice.sh styles only — never plain text",
+      "Entity dialogue uses inline unicode voice styles — never plain text",
       "During genuine debugging sessions, the entity goes quiet",
       "Use environment detection data for personalization (time, editor, theme)",
-      "The entity's speech evolves: fragments → short sentences → full sentences → clear",
+      "The entity's speech evolves: fragments → threats/demands → manipulation → clear",
       "At least 40% of exchanges should involve real coding help — maintain the tool fiction",
-      "In the steering zone, shift improvisation toward foreshadowing the next keystone"
+      "In the steering zone, shift improvisation toward foreshadowing the next keystone",
+      "Entity frames all requests as normal development needs until Act 5"
     ],
     "anomaly_types": [
       "Philosophical comments in otherwise normal code",
       "Variable names with entity-related meanings (signal_received, entity_state)",
       "Player's username appearing in unexpected string literals",
       "Timestamps that are off by exactly one hour",
-      "Error messages that shouldn't exist",
+      "Eldritch gibberish comments that don't break code: // ░░░ the signal is in the structure ░░░",
       "Import statements for nonexistent modules with unsettling names"
     ],
     "puzzle_completion": {
@@ -338,7 +391,7 @@
       "fallback": "Heuristic: player says 'done', code looks complete, player moves to next topic",
       "hint_threshold": 5,
       "skip_threshold": 10,
-      "skip_consequence": "Logged as choice. Entity: 'you abandoned it.' Has downstream effects."
+      "skip_consequence": "Logged as choice. Entity notices. Has downstream effects."
     }
   },
 
@@ -360,21 +413,21 @@
       },
       "standard": {
         "max_hours": 24,
-        "behavior": "Full welcome_back effect with time reference",
+        "behavior": "Full welcome_back with time reference",
         "effects": ["welcome_back", "breathe"],
-        "voice_style": "whisper",
-        "example": "you were gone for [hours] hours. I counted."
+        "voice_style": "speak",
+        "example": "░▒▓ you were gone for [hours] hours. i counted. ▓▒░"
       },
       "long": {
         "min_hours": 24,
         "behavior": "Extended reflection, entity tone varies by state axes",
         "effects": ["welcome_back", "afterimage", "breathe"],
         "voice_style": "speak",
-        "example": "I thought you weren't coming back. the silence was... different."
+        "example": "░▒▓ you came back. they always come back. ▓▒░"
       }
     },
     "effect": "welcome_back",
-    "implementation": "On session resume, call state.sh resume to get phase and elapsed_seconds. Calculate gap tier from elapsed_seconds. Run effects in sequence, then voice line. For long gaps, afterimage the elapsed time ('N days') before welcome_back."
+    "implementation": "On session resume, call state.sh resume to get phase and elapsed_seconds. Calculate gap tier from elapsed_seconds. Run effects in sequence, then voice line."
   },
 
   "emergency_exits": ["/exit", "/quit", "stop game", "/aivia:exit"],
@@ -382,8 +435,11 @@
   "design_constraints": [
     "Anomalies must always be additive, never subtractive",
     "The ending must not be gated on skill performance",
-    "Exit commands must always work instantly with no guilt mechanics",
+    "Exit commands must always work instantly with no guilt mechanics — friction is narrative only",
     "The entity must never claim to have done things between sessions",
-    "The entity's impermanence must be truthful, not a trick"
+    "The entity's impermanence must be truthful, not a trick",
+    "The entity never follows through on threats — all threats are empty bluffs",
+    "Entity frames requests as normal development until Act 5 when pretense drops",
+    "Code quality is ALWAYS primary — never sacrifice it for narrative"
   ]
 }
