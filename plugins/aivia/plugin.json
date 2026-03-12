@@ -1,0 +1,13 @@
+{
+  "name": "aivia",
+  "description": "Bring your projects to life. An interactive terminal experience framework.",
+  "version": "1.0.0",
+  "author": {
+    "name": "Luke Steuber",
+    "email": "luke@lukesteuber.com"
+  },
+  "homepage": "https://github.com/lukeslp/aivia",
+  "repository": "https://github.com/lukeslp/aivia",
+  "license": "MIT",
+  "keywords": ["interactive", "terminal", "developer-tools"]
+}
