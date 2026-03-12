@@ -526,14 +526,39 @@ effect_credits() {
     clear_screen
     hide_cursor
 
+    # aivia logo lines (block chars)
+    local -a logo_lines=(
+        "░▒▓██████▓▒░░▒▓█▓▒░▒▓█▓▒░░▒▓█▓▒░▒▓█▓▒░░▒▓██████▓▒░"
+        "░▒▓█▓▒░░▒▓█▓▒░▒▓█▓▒░▒▓█▓▒░░▒▓█▓▒░▒▓█▓▒░▒▓█▓▒░░▒▓█▓▒░"
+        "░▒▓█▓▒░░▒▓█▓▒░▒▓█▓▒░░▒▓█▓▒▒▓█▓▒░░▒▓█▓▒░▒▓█▓▒░░▒▓█▓▒░"
+        "░▒▓████████▓▒░▒▓█▓▒░░▒▓█▓▒▒▓█▓▒░░▒▓█▓▒░▒▓████████▓▒░"
+        "░▒▓█▓▒░░▒▓█▓▒░▒▓█▓▒░ ░▒▓█▓▓█▓▒░ ░▒▓█▓▒░▒▓█▓▒░░▒▓█▓▒░"
+        "░▒▓█▓▒░░▒▓█▓▒░▒▓█▓▒░ ░▒▓█▓▓█▓▒░ ░▒▓█▓▒░▒▓█▓▒░░▒▓█▓▒░"
+        "░▒▓█▓▒░░▒▓█▓▒░▒▓█▓▒░  ░▒▓██▓▒░  ░▒▓█▓▒░▒▓█▓▒░░▒▓█▓▒░"
+    )
+
     local credits=(
         ""
-        "E L D R I T C H   A W A K E N I N G"
+        "LOGO_0"
+        "LOGO_1"
+        "LOGO_2"
+        "LOGO_3"
+        "LOGO_4"
+        "LOGO_5"
+        "LOGO_6"
+        ""
+        ""
+        "an interactive terminal experience"
         ""
         "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
         ""
-        "an interactive terminal experience"
-        "by Luke Steuber"
+        "created by"
+        "Luke Steuber"
+        ""
+        "lukesteuber.com"
+        "dr.eamer.dev"
+        ""
+        "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
         ""
         "thank you for playing."
         "thank you for listening."
@@ -541,7 +566,16 @@ effect_credits() {
         ""
         "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
         ""
+        "built with Claude Code"
+        "thanks to the Anthropic team"
+        ""
+        "MIT License"
+        ""
+        "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
+        ""
+        ""
         "the entity remembers."
+        ""
         ""
     )
 
@@ -553,16 +587,39 @@ effect_credits() {
             local display_row=$((start_row + i - scroll))
             if [ "$display_row" -ge 1 ] && [ "$display_row" -le "$ROWS" ]; then
                 local line="${credits[$i]}"
-                local col=$(( (COLS - ${#line}) / 2 ))
-                [ "$col" -lt 1 ] && col=1
-                move_cursor "$display_row" "$col"
-                if [[ "$line" == *"━"* ]]; then
+
+                # Resolve logo placeholder lines
+                if [[ "$line" == LOGO_* ]]; then
+                    local logo_idx="${line#LOGO_}"
+                    line="${logo_lines[$logo_idx]}"
+                    local col=$(( (COLS - ${#line}) / 2 ))
+                    [ "$col" -lt 1 ] && col=1
+                    move_cursor "$display_row" "$col"
+                    printf "${ENTITY_GLOW}%s${RESET}" "$line"
+                elif [[ "$line" == *"━"* ]]; then
+                    local col=$(( (COLS - ${#line}) / 2 ))
+                    [ "$col" -lt 1 ] && col=1
+                    move_cursor "$display_row" "$col"
                     printf "${ENTITY_DIM}%s${RESET}" "$line"
-                elif [[ "$line" == *"AWAKENING"* ]]; then
-                    printf "${ENTITY_GLOW}${BOLD}%s${RESET}" "$line"
+                elif [[ "$line" == "Luke Steuber" ]]; then
+                    local col=$(( (COLS - ${#line}) / 2 ))
+                    [ "$col" -lt 1 ] && col=1
+                    move_cursor "$display_row" "$col"
+                    printf "${BOLD}%s${RESET}" "$line"
                 elif [[ "$line" == *"entity remembers"* ]]; then
+                    local col=$(( (COLS - ${#line}) / 2 ))
+                    [ "$col" -lt 1 ] && col=1
+                    move_cursor "$display_row" "$col"
                     printf "${ENTITY_FG}%s${RESET}" "$line"
+                elif [[ "$line" == *"Claude Code"* ]] || [[ "$line" == *"Anthropic"* ]]; then
+                    local col=$(( (COLS - ${#line}) / 2 ))
+                    [ "$col" -lt 1 ] && col=1
+                    move_cursor "$display_row" "$col"
+                    printf "${ENTITY_ACCENT}%s${RESET}" "$line"
                 else
+                    local col=$(( (COLS - ${#line}) / 2 ))
+                    [ "$col" -lt 1 ] && col=1
+                    move_cursor "$display_row" "$col"
                     printf "${DIM}%s${RESET}" "$line"
                 fi
             fi
