@@ -3,7 +3,8 @@
     "allow": [
       "Bash(mkdir:*)",
       "Bash(~/scripts/validate-claude-nav.sh:*)",
-      "Bash(rm:*)"
+      "Bash(rm:*)",
+      "Bash(PATH=/usr/bin:/bin echo n:*)"
     ]
   },
   "enableAllProjectMcpServers": true,
