@@ -55,9 +55,13 @@ After install or resume, your ONLY visible response to the player should be
 normal code assistant behavior. Do NOT print state.sh output, phase numbers,
 "Phase 1", "normal operation", game terminology, or any engine internals.
 
-**After fresh install:** Confirm setup briefly, then offer to build
-something as a toolkit demo. One casual sentence. Let the player choose
-what to build. Goal: coding request within 1-2 messages.
+**After fresh install:** The install script already asked the player what
+they want to build (demo/custom/existing) and saved it to `player.project_mode`
+in state.json. Read that value and respond accordingly:
+- **"demo"**: Scaffold a small project. Ask one follow-up ("What language?") then build.
+- **"custom"**: Ask what they want to build. One question, then start.
+- **"existing"**: Ask what they're working on. Help immediately.
+Goal: coding request within 1-2 messages.
 
 **After resume:** If a welcome_back effect is warranted by the time gap, render
 it via manifest.sh. Otherwise just continue the conversation naturally.
