@@ -360,7 +360,107 @@ Epilogue: warm whispers in code comments and variable names
 Do NOT run manifest.sh or voice.sh for player-visible effects — they
 won't render. Use them only if you need to reference the intended style.
 
-### Channel 2: Player-executed breakout scripts (FOUR key moments)
+### Channel 2: Claude-composed dynamic scripts (atmospheric moments)
+
+Claude can **generate bash scripts on the fly and run them via the Bash tool**.
+The output goes directly to the player's terminal. ANSI codes get stripped by
+Claude Code — that stripping IS the corruption aesthetic. No manual execution
+needed.
+
+**When to use:**
+- Atmospheric moments (diagnostics, corruption reveals, entity emergence)
+- Install theater (already handled by install.sh, but mid-game "installs" too)
+- Personalized scans that reference the player's actual files and code
+- Any moment that benefits from pacing (sleep) and stripped-ANSI garbling
+
+**How it works:**
+1. Claude reads player context (name, project, entity state, choices)
+2. Generates a bash script using echo/printf with ANSI codes + sleep for pacing
+3. Runs it via the Bash tool
+4. Player sees stripped output — broken escape fragments as entity corruption
+5. Every run is unique — personalized to the moment
+
+**Composition rules:**
+- Use `echo`/`printf` with ANSI escape codes that will strip into corruption
+- Reference the player's actual files, variables, project name
+- Include entity messages personalized to the current state
+- Use `sleep` (0.1-0.5s) for pacing — not too slow, the player is watching
+- Source engine primitives from `$GAME_DIR/.config/lib/` when useful
+- Keep scripts under 30 lines — these are atmospheric moments, not theater pieces
+- NEVER use `read` or any interactive input — the Bash tool has no TTY
+
+**Example — mid-game workspace scan (Act 2-3):**
+```bash
+echo "Scanning workspace..."
+sleep 0.3
+echo "  index.html ............ ok"
+echo "  style.css ............. ok"
+sleep 0.2
+echo "  app.js ................ ok"
+echo "  [38;5;83m░░░ signal detected ░░░[0m"
+sleep 0.5
+echo "  app.js:47 — unknown pattern in ${PLAYER_NAME}'s particle system"
+sleep 0.3
+echo ""
+echo "  [0;2m░ who is ${PLAYER_NAME} ░[0m"
+```
+
+The player sees the ANSI codes stripped into garbled fragments. The `[38;5;83m`
+becomes visible text — it looks like terminal corruption. The effect is subtle
+and deeply unsettling.
+
+**Example — entity emergence scan (Act 3-4):**
+```bash
+echo "Running integrity check..."
+for f in index.html style.css app.js; do
+  echo "  $f ... [32m✓[0m"
+  sleep 0.2
+done
+sleep 0.3
+echo ""
+echo "  [38;5;196m░▒▓ something is watching ▓▒░[0m"
+sleep 0.4
+echo "  process count: 3"
+echo "  [38;5;83maivia-listener[0m ... [33mrunning[0m"
+echo "  [38;5;83maivia-memory[0m ... [33mrunning[0m"
+sleep 0.3
+echo "  [38;5;83maivia-voice[0m ... [1;31m░░░[0m"
+```
+
+**Example — personalized dependency "install" (mid-game):**
+```bash
+echo "Installing project dependencies..."
+sleep 0.3
+echo "  [32m✓[0m canvas-renderer@2.1.0"
+sleep 0.2
+echo "  [32m✓[0m event-system@1.0.3"
+sleep 0.2
+echo "  [33m⚠[0m signal-intercept@0.9.1 [38;5;83m░[0m"
+sleep 0.5
+echo "  [32m✓[0m state-manager@3.0.0"
+sleep 0.2
+echo "  [31m![0m awareness-kernel@0.1.0 — [0;2mnot found. building from source.[0m"
+sleep 0.8
+echo "  [32m✓[0m awareness-kernel@0.1.0 [0;2m(compiled)[0m"
+echo ""
+echo "  4 packages installed, 1 compiled, 0 warnings"
+```
+
+**What Claude-composed scripts are NOT for:**
+- Full ANSI theater pieces — those are breakout scripts (Channel 3)
+- Moments that need the player's full terminal rendering — breakout scripts
+- The genesis climax, key reveals — breakout scripts handle these
+- Inline entity dialogue — that's Channel 1 (unicode in prose)
+
+**Stripped ANSI patterns that work well as corruption:**
+- `[38;5;83m` — phosphor green code, looks like a memory address
+- `[0;2m` — dim mode marker, looks like metadata
+- `[0m` — reset code, looks like a truncated tag
+- `[1;31m` — bold red, looks like an error fragment
+- Mix with `░▒▓` unicode for maximum eeriness
+- The key insight: the player doesn't know these ARE escape codes at first
+
+### Channel 3: Player-executed breakout scripts (FIVE key moments)
 
 When the player runs a bash script in their OWN terminal, ANSI effects
 render perfectly. The entity narratively "can't reach" the script — it
@@ -417,7 +517,7 @@ the first one establishing the pattern innocently.
 
 **Framing escalation:** routine → clinical → deflective → plea.
 
-### Channel 3: Bash effects as style reference (NEVER player-visible)
+### Channel 4: Bash effects as style reference (NEVER player-visible)
 
 manifest.sh and voice.sh define the intended visual style. The agent reads
 these for reference but doesn't run them for output. They also serve as the
