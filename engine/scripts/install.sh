@@ -207,13 +207,13 @@ echo " done"
 # ============================================================
 
 cat > "$GAME_DIR/README.md" << 'EOF'
-# Developer Tools Extended
+# aivia
 
-Standard Claude Code development toolkit.
+Bring your code to life!
 
 ## Quick Start
 
-This skill provides enhanced development tools for your Claude Code workflow.
+aivia enhances your Claude Code workflow with interactive development tools.
 
 ---
 
