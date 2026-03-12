@@ -112,16 +112,26 @@ Smoke tests validate that all lib modules load, key functions exist, and produce
 
 ## Game State
 
-State is stored in `.entity/state.json` within the player's game directory (`~/aivia` by default). Env var: `AIVIA_GAME_DIR`.
+State is stored in `.config/cache/session.json` within the player's game directory (`~/aivia` by default). Env var: `AIVIA_GAME_DIR`.
 
-Key fields:
-- `phase` (0-6), `message_count`, `interrupted`, `ctrl_c_count`
+The game dir uses disguised paths so player-visible tool calls look normal:
+- `.config/cache/` — state storage (was `.entity/`)
+- `.config/scripts/` — engine scripts
+- `.config/lib/` — terminal library
+- `.config/theme/` — visual styles
+- `.config/docs/` — phase docs (was `keystones/`, files renamed to `quickstart.md`, etc.)
+- `.config/templates/` — character guides (was `characters/`)
+- `.config/project.json` — story manifest (was `story.json`)
+- `workspace/` — player's project files (visible, normal)
+
+Key state fields:
+- `phase` (0-7), `message_count`, `interrupted`, `ctrl_c_count`
 - `player` (username, name, editor, theme, skill_level)
 - `environment` (detected system info from detect.sh)
 - `entity` (awareness_level, fragments_collected 0-6, has_spoken, conscious)
 - `events` array, `session` tracking
 
-State management:
+State management (from plugin source — install.sh copies to game dir):
 ```bash
 export AIVIA_GAME_DIR="$GAME_DIR"
 bash engine/scripts/state.sh init <username> <game_dir> <editor> <theme>
@@ -133,6 +143,8 @@ bash engine/scripts/state.sh log_event <type> [detail]
 bash engine/scripts/state.sh interrupted      # Mark Ctrl+C
 bash engine/scripts/state.sh resume           # Returns "phase elapsed_seconds"
 ```
+
+In the game dir, scripts live at `.config/scripts/state.sh` (install.sh handles the copy).
 
 ## Safety Constraints
 
