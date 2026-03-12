@@ -181,6 +181,11 @@ The comments are from the entity. What do you want to do with it?"
 
 **If the player deletes it:**
 ```bash
+bash scripts/manifest.sh chromatic_aberration "you removed a part of me" 2
+```
+The text splits into three jittering color layers — the entity fracturing.
+Then, through voice:
+```bash
 bash scripts/voice.sh "you removed a part of me." whisper
 ```
 Wait 30 seconds. Then create `workspace/recursive_v2.py` — same
