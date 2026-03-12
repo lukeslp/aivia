@@ -240,3 +240,70 @@ effect_signal_noise() {
     done
     show_cursor
 }
+
+# --- Effect: datamosh ---
+# Blocks of the screen swap positions briefly, like a corrupted video codec.
+# Rectangular regions jump to wrong locations, hold, then snap back.
+effect_datamosh() {
+    local duration=${1:-3}
+    local intensity=${2:-3}  # number of swapped blocks per frame
+
+    hide_cursor
+    local end_time=$((SECONDS + duration))
+
+    while [ $SECONDS -lt $end_time ]; do
+        local -a block_rows=()
+        local -a block_cols=()
+        local -a block_widths=()
+        local -a block_heights=()
+
+        for ((b=0; b<intensity; b++)); do
+            local bw=$((RANDOM % 15 + 5))
+            local bh=$((RANDOM % 3 + 1))
+            local src_row=$(random_int 1 "$((ROWS - bh))")
+            local src_col=$(random_int 1 "$((COLS - bw))")
+            local dst_row=$(random_int 1 "$((ROWS - bh))")
+            local dst_col=$(random_int 1 "$((COLS - bw))")
+
+            block_rows+=("$dst_row")
+            block_cols+=("$dst_col")
+            block_widths+=("$bw")
+            block_heights+=("$bh")
+
+            # Draw a block of garbage at the destination
+            for ((r=0; r<bh; r++)); do
+                local row=$((dst_row + r))
+                [ "$row" -gt "$ROWS" ] && continue
+                move_cursor "$row" "$dst_col"
+                local line=""
+                for ((c=0; c<bw; c++)); do
+                    if [ $((RANDOM % 3)) -eq 0 ]; then
+                        line+="${FRAME_CHAR_SET[$((RANDOM % ${#FRAME_CHAR_SET[@]}))]}"
+                    elif [ $((RANDOM % 2)) -eq 0 ]; then
+                        line+="▓"
+                    else
+                        line+="░"
+                    fi
+                done
+                printf "${ENTITY_ACCENT}%s${RESET}" "$line"
+            done
+        done
+
+        sleep_ms $((60 / intensity + 20))
+
+        # Clear the blocks
+        for ((b=0; b<${#block_rows[@]}; b++)); do
+            local bh=${block_heights[$b]}
+            local bw=${block_widths[$b]}
+            for ((r=0; r<bh; r++)); do
+                local row=$((${block_rows[$b]} + r))
+                [ "$row" -gt "$ROWS" ] && continue
+                move_cursor "$row" "${block_cols[$b]}"
+                printf "%*s" "$bw" ""
+            done
+        done
+
+        sleep_ms $((30 / intensity + 10))
+    done
+    show_cursor
+}

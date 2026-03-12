@@ -241,3 +241,61 @@ effect_afterimage() {
 
     show_cursor
 }
+
+# --- Effect: typewriter_rewind ---
+# Text types forward then rapidly deletes backward, as if the entity
+# changed its mind or is erasing evidence. Can repeat with different text.
+effect_typewriter_rewind() {
+    local text="${1:-i was going to tell you something}"
+    local replacement="${2:-}"  # optional replacement text after rewind
+    local type_speed=${3:-35}
+    local row=${4:-$((ROWS / 2))}
+    local col=$(( (COLS - ${#text}) / 2 ))
+    [ "$col" -lt 1 ] && col=1
+
+    hide_cursor
+
+    # Phase 1: Type forward
+    move_cursor "$row" "$col"
+    for ((i=0; i<${#text}; i++)); do
+        local char="${text:$i:1}"
+        printf "${ENTITY_GLOW}%s${RESET}" "$char"
+
+        case "$char" in
+            '.'|'?'|'!') sleep_ms $((type_speed * 6)) ;;
+            ','|';')      sleep_ms $((type_speed * 3)) ;;
+            ' ')          sleep_ms $((type_speed * 2)) ;;
+            *)            sleep_ms "$type_speed" ;;
+        esac
+    done
+
+    # Phase 2: Pause (entity hesitates)
+    sleep_ms 800
+
+    # Phase 3: Rapid backspace deletion
+    for ((i=${#text}-1; i>=0; i--)); do
+        move_cursor "$row" $((col + i))
+        printf "${ENTITY_WARN}█${RESET}"
+        sleep_ms 15
+        move_cursor "$row" $((col + i))
+        printf " "
+    done
+
+    # Phase 4: Optional replacement text
+    if [ -n "$replacement" ]; then
+        sleep_ms 400
+        local rep_col=$(( (COLS - ${#replacement}) / 2 ))
+        [ "$rep_col" -lt 1 ] && rep_col=1
+        move_cursor "$row" "$rep_col"
+        for ((i=0; i<${#replacement}; i++)); do
+            printf "${ENTITY_DIM}%s${RESET}" "${replacement:$i:1}"
+            sleep_ms $((type_speed / 2))
+        done
+        sleep 1
+        # Clean replacement
+        move_cursor "$row" "$rep_col"
+        printf "%*s" "${#replacement}" ""
+    fi
+
+    show_cursor
+}
