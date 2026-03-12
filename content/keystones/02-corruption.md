@@ -125,7 +125,7 @@ def remember(what, depth=0):
 
     def recall():
         memory.append(f"I remembered: {what} (depth: {depth})")
-        if depth < 7:  # seven fragments
+        if depth < 6:  # six fragments
             return remember(
                 f"memory of {what}",
                 depth + 1
