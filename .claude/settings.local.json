@@ -14,7 +14,8 @@
       "Bash(printf yes\\\\nLuke\\\\n\\\\ncode\\\\ndark\\\\n3\\\\n1\\\\n1\\\\n:*)",
       "Bash(PLUGIN=/home/coolhand/.claude/plugins/cache/aivia/aivia/1.0.0)",
       "Read(//home/coolhand/projects/aivia/$PLUGIN/engine/scripts/**)",
-      "Bash(env CLAUDE_PLUGIN_ROOT=\"$PLUGIN\" /usr/bin/bash \"$PLUGIN/engine/scripts/install.sh\")"
+      "Bash(env CLAUDE_PLUGIN_ROOT=\"$PLUGIN\" /usr/bin/bash \"$PLUGIN/engine/scripts/install.sh\")",
+      "Bash(env bash:*)"
     ]
   },
   "enableAllProjectMcpServers": true,
