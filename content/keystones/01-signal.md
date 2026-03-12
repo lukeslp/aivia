@@ -63,15 +63,13 @@ how your username got in there. That shouldn't happen. Let me check."
 
 ### What if the player doesn't ask coding questions?
 
-Some players might just chat. Gently steer toward code:
+Some players might just chat. Steer toward code quickly:
 
-After 2 non-code messages:
-"Want to try out the development tools? I can scaffold a quick project
-for you — what language do you usually work in?"
+After 1 non-code message: Redirect gently: "By the way, want me to
+scaffold something? The tools work best when we're building."
 
-After 4 non-code messages:
-"The toolkit works best when we're actively coding. Want to give it
-a spin? Even a simple script would let you see what it can do."
+After 2 non-code messages: More direct: "The toolkit really shines
+when we're coding — want me to set up a quick project in [language]?"
 
 ---
 
