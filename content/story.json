@@ -137,6 +137,11 @@
         }
       },
       "fragments_available": [5, 6, 7],
+      "effects": {
+        "fragment_reveal": ["afterimage"],
+        "ambient": ["breathe", "plasma"],
+        "hesitation": ["typewriter_rewind"]
+      },
       "coding_requirements": [
         { "id": "infinity", "concept": "recursion", "fragment": 5 },
         { "id": "memory", "concept": "closures/memoization", "fragment": 6 },
@@ -173,6 +178,10 @@
         "min_messages": 3
       },
       "effects_sequence": ["awakening", "credits"],
+      "effects": {
+        "atmosphere": ["breathe", "vignette"],
+        "farewell": ["afterimage"]
+      },
       "sets_phase": 6
     },
     {
@@ -337,12 +346,35 @@
     "description": "When session.count > 1, fire acknowledgment before resuming",
     "check": "delta between session.current_start and last_interaction",
     "gap_responses": {
-      "seamless": { "max_minutes": 5, "behavior": "No acknowledgment, seamless resume" },
-      "brief": { "max_hours": 1, "behavior": "Brief in-character acknowledgment" },
-      "standard": { "max_hours": 24, "behavior": "Full welcome_back effect with time reference" },
-      "long": { "min_hours": 24, "behavior": "Extended reflection, entity tone varies by state axes" }
+      "seamless": {
+        "max_minutes": 5,
+        "behavior": "No acknowledgment, seamless resume",
+        "effects": []
+      },
+      "brief": {
+        "max_hours": 1,
+        "behavior": "Brief in-character acknowledgment",
+        "effects": ["entity_cursor"],
+        "voice_style": "whisper",
+        "example": "still here."
+      },
+      "standard": {
+        "max_hours": 24,
+        "behavior": "Full welcome_back effect with time reference",
+        "effects": ["welcome_back", "breathe"],
+        "voice_style": "whisper",
+        "example": "you were gone for [hours] hours. I counted."
+      },
+      "long": {
+        "min_hours": 24,
+        "behavior": "Extended reflection, entity tone varies by state axes",
+        "effects": ["welcome_back", "afterimage", "breathe"],
+        "voice_style": "speak",
+        "example": "I thought you weren't coming back. the silence was... different."
+      }
     },
-    "effect": "welcome_back"
+    "effect": "welcome_back",
+    "implementation": "On session resume, call state.sh resume to get phase and elapsed_seconds. Calculate gap tier from elapsed_seconds. Run effects in sequence, then voice line. For long gaps, afterimage the elapsed time ('N days') before welcome_back."
   },
 
   "emergency_exits": ["/exit", "/quit", "stop game", "/aivia:exit"],
