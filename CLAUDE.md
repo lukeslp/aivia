@@ -151,9 +151,9 @@ Non-negotiable design rules:
 
 ## Adding New Effects
 
-1. Add the function as `effect_<name>()` in `engine/scripts/manifest.sh`
-2. Source any needed lib modules at the top of the function
-3. Add the dispatch case in the `case` block at the bottom
-4. Add to the help text
+1. Add the function as `effect_<name>()` in the appropriate `manifest_*.sh` module (or `manifest.sh` for uncategorized). Modules are auto-sourced by manifest.sh via glob — no manual source line needed.
+2. Add the dispatch case in the `case` block at the bottom of `manifest.sh`
+3. Add to the help text in manifest.sh
+4. Add to the appropriate `EFFECTS_*` array and `run_effect` case in `tester.sh`
 5. Always use `hide_cursor`/`show_cursor` around cursor-manipulating effects
 6. Use `sleep_ms` from core.sh (not raw `sleep`) for sub-second timing
