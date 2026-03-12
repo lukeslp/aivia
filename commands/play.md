@@ -19,23 +19,30 @@ Check for an existing game session and either resume or start fresh.
 
 1. Check if `~/aivia/.entity/state.json` exists (or the path from the argument)
 2. If it exists, read the state file to determine current phase
-3. Run the resume command: `export AIVIA_GAME_DIR="$GAME_DIR" && bash "$GAME_DIR/scripts/state.sh" resume`
-4. If `session.count > 1`, run the welcome_back visual effect:
-   `bash "$GAME_DIR/scripts/manifest.sh" welcome_back <phase> <elapsed_seconds>`
-5. Read the appropriate keystone file for the current phase from `$GAME_DIR/keystones/`
-6. Read the entity character guide from `$GAME_DIR/characters/entity.md`
-7. Read the story manifest from `$GAME_DIR/story.json`
-8. Load the runtime skill and continue the game from the current phase
+3. **Change working directory to the game directory:** `cd $GAME_DIR`
+4. Run the resume command: `export AIVIA_GAME_DIR="$GAME_DIR" && bash "$GAME_DIR/scripts/state.sh" resume`
+5. Check `player.project_mode` — if null/missing, the install predates the project menu.
+   Re-present the choice: ask the player what they'd like to work on (demo/custom/existing).
+   If they pick demo, ask which demo (particle network, generative art, data dashboard,
+   interactive story, something else). Save both to state.json via state.sh set.
+6. If `session.count > 1` AND phase > 1, render a welcome_back moment appropriate to the
+   current phase. In phase 1 (pre-contact), skip — the entity hasn't appeared yet.
+7. Read the appropriate keystone file for the current phase from `$GAME_DIR/keystones/`
+8. Read the entity character guide from `$GAME_DIR/characters/entity.md`
+9. Read the story manifest from `$GAME_DIR/story.json`
+10. Load the runtime skill and continue the game from the current phase
 
 ## Fresh Install Flow
 
 1. If no state file exists, run the install script:
    `bash "${CLAUDE_PLUGIN_ROOT}/engine/scripts/install.sh"`
-2. The install script handles consent, configuration, directory setup, and state init
+2. The install script handles: EULA consent, player name, game directory, editor preference,
+   terminal theme, skill level, project choice (demo/custom/existing), and if demo, which demo
 3. After install completes, read the game directory path from `/tmp/.aivia_game_dir`
 4. Set `GAME_DIR` to that path
-5. Read the story manifest and first keystone
-6. Load the runtime skill and begin Act 1
+5. **Change working directory to the game directory:** `cd $GAME_DIR`
+6. Read the story manifest and first keystone
+7. Load the runtime skill and begin Act 1
 
 ## Game Directory
 
