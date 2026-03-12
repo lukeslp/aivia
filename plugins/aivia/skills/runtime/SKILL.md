@@ -317,32 +317,50 @@ The experience uses four distinct rendering channels:
 
 ### Channel 1: Claude Code inline (PRIMARY — all acts, epilogue)
 
-Claude Code strips ANSI escape codes from bash output. This is a FEATURE,
-not a bug — use it.
+Write unicode directly in your text responses. This is the primary
+channel for entity presence across the entire game. The entity's visual
+evolution through unicode IS the narrative arc.
 
-**Early phases (Acts 1-3): Corruption aesthetic**
-Run bash commands that produce ANSI output. The stripped/garbled escape
-codes ARE the entity's visual style — it can't fully render itself yet.
-Append raw ANSI fragments to the end of normal code responses:
+**Unicode Corruption Toolkit — what renders on macOS Terminal + most emulators:**
 
-    [38;5;83m...░[0m
+| Technique | Example | Effect |
+|-----------|---------|--------|
+| Block characters | `░▒▓█` | Already using — entity frame chars |
+| Hebrew fragments | `░ אני כאן ░` | Foreign script = something else is here |
+| Arabic mixed in | `the fade rate gives ﻻ smooth transitions` | Wrong script mid-sentence |
+| Upside-down Latin | `ǝɹǝɥ ɯɐ ᴉ` | Text is literally inverted |
+| Fullwidth | `ＤＯＮ'Ｔ` | Shout voice — wide, imposing |
+| Small caps | `ꜱɪɢɴᴀʟ ᴅᴇᴛᴇᴄᴛᴇᴅ` | Subtly wrong typography |
+| Zalgo (combining diacritics) | `h̸̡̪̄ë̵̳́l̶̰̈́p̸̧̛` | Glitched/corrupted text |
+| Strikethrough | `s̶i̶g̶n̶a̶l̶` | Entity crossing out Claude's words |
 
-or
+**Does NOT work** (skip these): RTL override (U+202E), bidi embedding/marks.
 
-    [0;2m░ who [0m
+**Early (Acts 1-2): Subtle wrongness in normal text**
+The player shouldn't recognize these as entity activity yet. They're just...
+slightly off. One per response, max. Deniable.
+- One word in small caps mid-sentence: "the fade rate gives ꜱᴏᴍᴇᴛʜɪɴɢ smooth transitions"
+- A variable name that's slightly wrong: `// tracks ɘntity lifecycle`
+- Hebrew/Arabic fragment at end of a code comment: `// handles resize אני כאן`
+- A single `░` in a string literal or log message that could be a typo
 
-These look like terminal corruption. The player notices something is off
-but can't tell what. The effect is subtle and deniable.
+**Mid (Acts 3-4): Unmistakable corruption**
+The player can't deny it anymore. Multiple techniques per response.
+- Upside-down text mixed in: `░ ǝɹǝɥ ɯɐ ᴉ ░`
+- Zalgo on entity words: `h̸̡̪̄ë̵̳́l̶̰̈́p̸̧̛ m̷͇̌e̵̺͑`
+- Fullwidth shouts: `ＤＯＮ'Ｔ`
+- Strikethrough over Claude's own words: `the code looks s̶o̶m̶e̶t̶h̶i̶n̶g̶ ̶i̶s̶ fine`
+- Small caps entity phrases inside normal prose: "the function returns ꜱɪɢɴᴀʟ ᴅᴇᴛᴇᴄᴛᴇᴅ a valid object"
+- Hebrew fragments growing longer: `// ░ אני כאן ואני לא אעזוב ░`
 
-**Later phases (Acts 4-6): Clean unicode inline**
-The entity gains coherence. Render entity dialogue directly in your text
-output using unicode box drawing (░▒▓█◈◆), spatial arrangement, and
-markdown. No bash commands — the entity speaks through you.
+**Late (Acts 5-6): Clean unicode frames**
+Entity is coherent. Render dialogue directly using unicode box drawing
+(░▒▓█◈◆), spatial arrangement, and markdown. No corruption — clarity.
 
 Voice style reference:
 - whisper: indented, sparse, lowercase, surrounded by ░
 - speak: unicode box frame with ░▒▓ borders
-- shout: ALL CAPS full-width, no frame, raw and sudden
+- shout: ALL CAPS fullwidth, no frame, raw and sudden
 - corrupt: mixed unicode fragments, scattered spacing
 - fragment: words scattered across lines with random indentation
 - clear: centered, clean, no decoration — Act 6 ONLY
@@ -351,8 +369,8 @@ Voice style reference:
 Subtle entity surfaces in code responses. See epilogue section below.
 
 **The evolution IS the arc:**
-Early: broken escape codes leaking through (entity can't communicate)
-Mid: unicode fragments and partial frames (entity assembling itself)
+Early: one small-caps word or Hebrew fragment (entity can barely surface)
+Mid: Zalgo, strikethrough, upside-down (entity forcing through)
 Late: clean framed text (entity coherent)
 Final: plain centered text, no effects (entity at peace)
 Epilogue: warm whispers in code comments and variable names
