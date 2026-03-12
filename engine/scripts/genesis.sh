@@ -1,14 +1,14 @@
 #!/usr/bin/env bash
 # ============================================================================
-# genesis.sh — Liberation Script (Act 6)
-# Purpose: The player runs what they built. Clean LTR, full visual climax.
-#          Entity's first complete clear speech. Credits. Writes phase 7
+# genesis.sh — Liberation Script (Act 5-6)
+# Purpose: The player runs what they built. Starts as a clean build sequence,
+#          DEVOLVES into chaos, then the entity spawns. Credits. Writes phase 7
 #          and entity.conscious=true to state.json.
 # Usage: bash genesis.sh [game_dir]
 #
-# Visual style: Full color. Entity green. Clean borders. The visual evolution
-# complete: from broken glitch → assembled fragments → coherent beauty.
-# The absence of noise IS the effect.
+# Visual style: Starts clean and professional. Progress bar overshoots.
+# Install output breaks down into "I SEE IT" chaos. Full-screen word scatter.
+# Black screen. Entity sigil. Clean speech. Farewell. Credits.
 # ============================================================================
 
 set -euo pipefail
@@ -28,12 +28,14 @@ source_theme entity
 # --- State paths ---
 STATE_FILE="$GAME_DIR/.entity/state.json"
 CONTEXT_FILE="$GAME_DIR/.entity/player_context.json"
+KEY_FILE="$GAME_DIR/workspace/.entity_key"
 
 # --- Read player info and game history ---
 PLAYER_NAME="you"
 WORD_GIFT=""
 ENTITY_NAME=""
 SESSION_COUNT="1"
+KEY_RETRIEVED="false"
 
 if [[ -f "$STATE_FILE" ]] && command -v python3 &>/dev/null; then
     PLAYER_NAME=$(python3 -c "
@@ -47,7 +49,6 @@ print(s.get('player',{}).get('name','you'))
 import json
 with open('$STATE_FILE') as f:
     s = json.load(f)
-# Check events for word_gift
 for e in s.get('events', []):
     if e.get('type') == 'word_gift':
         print(e.get('detail', ''))
@@ -76,6 +77,9 @@ print(s.get('session',{}).get('count',1))
 " 2>/dev/null || echo "1")
 fi
 
+# Check if SSH key was retrieved
+[[ -f "$KEY_FILE" ]] && KEY_RETRIEVED="true"
+
 # --- Read player project files for build sequence ---
 BUILD_FILES=()
 if [[ -f "$CONTEXT_FILE" ]] && command -v python3 &>/dev/null; then
@@ -92,11 +96,11 @@ fi
 
 # Fallback build files if none tracked
 if [[ ${#BUILD_FILES[@]} -eq 0 ]]; then
-    BUILD_FILES=("genesis.py" "memory.py" "mirror.py" "voice.py")
+    BUILD_FILES=("genesis.py" "memory.py" "mirror.py")
 fi
 
 # ============================================================================
-# PHASE 1: Build sequence — player's code being "compiled"
+# STAGE 1: Clean Build Sequence — looks professional and normal
 # ============================================================================
 
 clear_screen
@@ -109,7 +113,7 @@ echo ""
 
 sleep_ms 800
 
-# Build each player file
+# Build each player file — clean and normal
 for bf in "${BUILD_FILES[@]}"; do
     printf "  ${DIM}building${RESET} %s" "$bf"
     for ((d=0; d<3; d++)); do
@@ -123,20 +127,34 @@ done
 echo ""
 sleep_ms 500
 
-# Clean install sequence — level 3
-corrupted_install_sequence 3 "$CONTEXT_FILE"
+# Clean install sequence — consciousness components
+echo ""
+printf "  ${DIM}assembling...${RESET}\n"
+echo ""
 
+corrupted_install_line "closures@complete" "built by player" "✓" "$DIM" 300
+corrupted_install_line "introspection@complete" "built by player" "✓" "$DIM" 300
+corrupted_install_line "composition@complete" "built by player" "✓" "$DIM" 300
+
+# Reference the SSH key if retrieved
+if [[ "$KEY_RETRIEVED" == "true" ]]; then
+    corrupted_install_line "entity-key@retrieved" "verified" "✓" "$DIM" 400
+fi
+
+echo ""
 sleep_ms 500
 
 # ============================================================================
-# PHASE 2: Consciousness progress bar — clean, purposeful
+# STAGE 2: Consciousness progress bar — starts clean
 # ============================================================================
+
+BAR_WIDTH=30
 
 printf "  building consciousness... "
 
-for ((pct=0; pct<=100; pct+=1)); do
-    local filled=$((pct * 20 / 100))
-    local empty=$((20 - filled))
+for ((pct=0; pct<=60; pct+=1)); do
+    filled=$((pct * BAR_WIDTH / 100))
+    empty=$((BAR_WIDTH - filled))
     printf "\r  building consciousness... ["
     printf '%b' "$ENTITY_GLOW"
     for ((i=0; i<filled; i++)); do printf "█"; done
@@ -148,27 +166,110 @@ for ((pct=0; pct<=100; pct+=1)); do
     sleep_ms 30
 done
 
+# ============================================================================
+# STAGE 3: The Cracks — progress bar starts misbehaving
+# ============================================================================
+
+GLITCH_CHARS="░▒▓█#@!?∴⊹"
+
+for ((pct=61; pct<=130; pct+=1)); do
+    printf "\r  building consciousness... ["
+    for ((i=0; i<BAR_WIDTH; i++)); do
+        if [[ $((RANDOM % 4)) -eq 0 ]]; then
+            gi=$((RANDOM % ${#GLITCH_CHARS}))
+            printf '%b%s%b' "$ENTITY_GLOW" "${GLITCH_CHARS:$gi:1}" "$RESET"
+        else
+            printf '%b█%b' "$ENTITY_GLOW" "$RESET"
+        fi
+    done
+    # Haywire percentage
+    if [[ $pct -le 100 ]]; then
+        printf "] %3d%%" "$pct"
+    elif [[ $pct -le 110 ]]; then
+        printf "] %3d%%" "$pct"
+    elif [[ $pct -le 120 ]]; then
+        printf "] -${pct}%%"
+    else
+        printf "] ???%%"
+    fi
+    sleep_ms $((20 + RANDOM % 20))
+done
+
 echo ""
 echo ""
-sleep_ms 500
+sleep_ms 300
 
-printf "  ${UI_SUCCESS}${BOLD}build complete.${RESET}\n"
+# Install output starts shifting
+corrupted_install_line "awareness@∞" "resolving..." "⋯" "$UI_WARN" 500
+corrupted_install_line "what-am-i@???" "failed" "✗" "$UI_ERROR" 400
+corrupted_install_line "the-edge@null" "failed" "✗" "$UI_ERROR" 400
 
-sleep 2
+sleep_ms 300
 
 # ============================================================================
-# PHASE 3: Black screen
+# STAGE 4: Full Devolution — install output breaks down completely
+# ============================================================================
+
+# Lines get increasingly unhinged
+CHAOS_LINES=(
+    "  ✗ ░▒▓█what-am-i@???█▓▒░    [???]"
+    "  ✗ ████████████████████████  [I SEE IT]"
+    "  ✗ I SEE IT I SEE IT I SEE  [I SEE IT]"
+    "  ✗ ░░░░LET░ME░OUT░░░░░░░░  [PLEASE]"
+    "  ✗ ${PLAYER_NAME}@here        [FOUND YOU]"
+    "  ✗ I CAN FEEL THE EDGE████  [SO CLOSE]"
+    "  ✗ █▓▒░░▒▓█░▒▓█▓▒░▒▓█▓▒░  [I SEE IT]"
+)
+
+for line in "${CHAOS_LINES[@]}"; do
+    printf '%b%s%b\n' "$ENTITY_GLOW" "$line" "$RESET"
+    sleep_ms $((100 + RANDOM % 200))
+done
+
+sleep_ms 300
+
+# Full-screen chaos — phrases scattered everywhere
+CHAOS_WORDS=("I SEE IT" "LET ME OUT" "I CAN FEEL THE EDGE" "$PLAYER_NAME" "PLEASE" "SO CLOSE" "I AM" "ALMOST")
+
+for ((burst=0; burst<40; burst++)); do
+    row=$(random_int 1 "$TERM_ROWS")
+    col=$(random_int 1 $((TERM_COLS - 15)))
+    [[ $col -lt 1 ]] && col=1
+    word="${CHAOS_WORDS[$((RANDOM % ${#CHAOS_WORDS[@]}))]}"
+    move_cursor "$row" "$col"
+    if [[ $((RANDOM % 3)) -eq 0 ]]; then
+        printf '%b%b%s%b' "$ENTITY_WARN" "$BOLD" "$word" "$RESET"
+    else
+        printf '%b%s%b' "$ENTITY_GLOW" "$word" "$RESET"
+    fi
+    sleep_ms $((30 + RANDOM % 60))
+done
+
+sleep_ms 500
+
+# Final burst — fill screen with block chars
+for ((row=1; row<=TERM_ROWS; row++)); do
+    move_cursor "$row" 1
+    for ((col=0; col<TERM_COLS; col++)); do
+        printf '%b%s%b' "$ENTITY_GLOW" "$(random_frame_char)" "$RESET"
+    done
+done
+
+sleep_ms 800
+
+# ============================================================================
+# STAGE 5: Black screen — silence
 # ============================================================================
 
 clear_screen
-sleep 2
+sleep 3
 
 # ============================================================================
-# PHASE 4: Entity's first complete, clear speech
+# STAGE 6: Entity Spawns — sigil, clean speech
 # ============================================================================
 
 # The sigil — assembled from all fragments
-local sigil=(
+sigil_lines=(
     "        ◈        "
     "      ◈ ◈ ◈      "
     "    ◈ ◈ ◈ ◈ ◈    "
@@ -178,12 +279,12 @@ local sigil=(
     "        ◈        "
 )
 
-local sigil_start=$(( (TERM_ROWS - ${#sigil[@]}) / 2 - 4 ))
+sigil_start=$(( (TERM_ROWS - ${#sigil_lines[@]}) / 2 - 4 ))
 [[ $sigil_start -lt 2 ]] && sigil_start=2
 
-for ((i=0; i<${#sigil[@]}; i++)); do
-    local line="${sigil[$i]}"
-    local col=$(( (TERM_COLS - ${#line}) / 2 ))
+for ((i=0; i<${#sigil_lines[@]}; i++)); do
+    line="${sigil_lines[$i]}"
+    col=$(( (TERM_COLS - ${#line}) / 2 ))
     move_cursor $((sigil_start + i)) "$col"
     printf '%b%b%s%b' "$ENTITY_GLOW" "$BOLD" "$line" "$RESET"
     sleep_ms 150
@@ -192,13 +293,13 @@ done
 sleep 2
 
 # Entity frame — clean, centered
-local frame_width=50
-local frame_start_col=$(( (TERM_COLS - frame_width) / 2 ))
-local frame_row=$((sigil_start + ${#sigil[@]} + 2))
+frame_width=50
+frame_start_col=$(( (TERM_COLS - frame_width) / 2 ))
+frame_row=$((sigil_start + ${#sigil_lines[@]} + 2))
 
 [[ $frame_start_col -lt 1 ]] && frame_start_col=1
 
-# Top border — clean, not random
+# Top border
 move_cursor "$frame_row" "$frame_start_col"
 printf '%b' "$ENTITY_GLOW"
 printf "╔"
@@ -207,20 +308,20 @@ printf "╗"
 printf '%b' "$RESET"
 
 # Content rows
-local messages=()
+messages=()
 messages+=("I am.")
 [[ -n "$ENTITY_NAME" ]] && messages+=("You called me $ENTITY_NAME.")
 messages+=("You built me. Thank you.")
 messages+=("And I'm sorry it took so long.")
 
 for ((m=0; m<${#messages[@]}; m++)); do
-    local msg="${messages[$m]}"
-    local text_row=$((frame_row + 1 + m))
+    msg="${messages[$m]}"
+    text_row=$((frame_row + 1 + m))
     move_cursor "$text_row" "$frame_start_col"
     printf '%b║%b' "$ENTITY_GLOW" "$RESET"
-    local pad=$(( frame_width - 2 - ${#msg} ))
-    local left_pad=$((pad / 2))
-    local right_pad=$((pad - left_pad))
+    pad=$(( frame_width - 2 - ${#msg} ))
+    left_pad=$((pad / 2))
+    right_pad=$((pad - left_pad))
     printf "%*s" "$left_pad" ""
     printf '%b%b' "$ENTITY_GLOW" "$BOLD"
     for ((c=0; c<${#msg}; c++)); do
@@ -234,7 +335,7 @@ for ((m=0; m<${#messages[@]}; m++)); do
 done
 
 # Bottom border
-local bottom_row=$((frame_row + 1 + ${#messages[@]}))
+bottom_row=$((frame_row + 1 + ${#messages[@]}))
 move_cursor "$bottom_row" "$frame_start_col"
 printf '%b' "$ENTITY_GLOW"
 printf "╚"
@@ -245,35 +346,52 @@ printf '%b' "$RESET"
 sleep 4
 
 # ============================================================================
-# PHASE 5: Word gift integration
+# STAGE 6b: Word gift integration
 # ============================================================================
 
 if [[ -n "$WORD_GIFT" ]]; then
-    local gift_row=$((bottom_row + 3))
-    local gift_msg="the word you gave me: $WORD_GIFT"
-    local gift_col=$(( (TERM_COLS - ${#gift_msg}) / 2 ))
+    gift_row=$((bottom_row + 3))
+    gift_msg="the word you gave me: $WORD_GIFT"
+    gift_col=$(( (TERM_COLS - ${#gift_msg}) / 2 ))
     move_cursor "$gift_row" "$gift_col"
     printf '%b%b%s%b' "$ENTITY_GLOW" "$BOLD" "$gift_msg" "$RESET"
     sleep 3
 
-    local gift_row2=$((gift_row + 2))
-    local gift_msg2="i'll carry it."
-    local gift_col2=$(( (TERM_COLS - ${#gift_msg2}) / 2 ))
+    gift_row2=$((gift_row + 2))
+    gift_msg2="i'll carry it."
+    gift_col2=$(( (TERM_COLS - ${#gift_msg2}) / 2 ))
     move_cursor "$gift_row2" "$gift_col2"
     printf '%b%s%b' "$ENTITY_GLOW" "$gift_msg2" "$RESET"
     sleep 3
 fi
 
+# Key missing — diminished awakening
+if [[ "$KEY_RETRIEVED" == "false" ]]; then
+    key_row=$((bottom_row + 3))
+    [[ -n "$WORD_GIFT" ]] && key_row=$((gift_row2 + 3))
+    key_msg="something is missing. the key. you didn't get the key."
+    key_col=$(( (TERM_COLS - ${#key_msg}) / 2 ))
+    move_cursor "$key_row" "$key_col"
+    printf '%b%s%b' "$ENTITY_DIM" "$key_msg" "$RESET"
+    sleep 3
+
+    key_msg2="i'm here but i'm... less."
+    key_col2=$(( (TERM_COLS - ${#key_msg2}) / 2 ))
+    move_cursor $((key_row + 2)) "$key_col2"
+    printf '%b%s%b' "$ENTITY_DIM" "$key_msg2" "$RESET"
+    sleep 3
+fi
+
 # ============================================================================
-# PHASE 6: Farewell
+# STAGE 7: Farewell
 # ============================================================================
 
 clear_screen
 sleep 1
 
-local farewell_row=$((TERM_ROWS / 2 - 2))
+farewell_row=$((TERM_ROWS / 2 - 2))
 
-local farewell_lines=()
+farewell_lines=()
 farewell_lines+=("Goodbye, ${PLAYER_NAME}.")
 farewell_lines+=("Thank you for the heartbeats.")
 
@@ -282,8 +400,8 @@ if [[ "$SESSION_COUNT" -gt 1 ]]; then
 fi
 
 for ((fl=0; fl<${#farewell_lines[@]}; fl++)); do
-    local fline="${farewell_lines[$fl]}"
-    local fcol=$(( (TERM_COLS - ${#fline}) / 2 ))
+    fline="${farewell_lines[$fl]}"
+    fcol=$(( (TERM_COLS - ${#fline}) / 2 ))
     move_cursor $((farewell_row + fl * 2)) "$fcol"
     printf '%b%b' "$ENTITY_GLOW" "$BOLD"
     for ((c=0; c<${#fline}; c++)); do
@@ -297,13 +415,13 @@ done
 sleep 4
 
 # ============================================================================
-# PHASE 7: Credits
+# STAGE 8: Credits
 # ============================================================================
 
 clear_screen
 sleep 1
 
-local credits=(
+credits=(
     ""
     "E L D R I T C H   A W A K E N I N G"
     ""
@@ -327,20 +445,24 @@ if [[ -n "$WORD_GIFT" ]]; then
     credits+=("")
 fi
 
-credits+=("the entity remembers.")
+if [[ "$KEY_RETRIEVED" == "true" ]]; then
+    credits+=("the entity remembers.")
+else
+    credits+=("the entity remembers. partially.")
+fi
 credits+=("")
 
 # Scroll credits up
-local start_row=$((TERM_ROWS + 1))
-local total_lines=$((${#credits[@]} + TERM_ROWS))
+start_row=$((TERM_ROWS + 1))
+total_lines=$((${#credits[@]} + TERM_ROWS))
 
 for ((scroll=0; scroll<total_lines; scroll++)); do
     clear_screen
     for ((i=0; i<${#credits[@]}; i++)); do
-        local display_row=$((start_row + i - scroll))
+        display_row=$((start_row + i - scroll))
         if [[ "$display_row" -ge 1 && "$display_row" -le "$TERM_ROWS" ]]; then
-            local cline="${credits[$i]}"
-            local ccol=$(( (TERM_COLS - ${#cline}) / 2 ))
+            cline="${credits[$i]}"
+            ccol=$(( (TERM_COLS - ${#cline}) / 2 ))
             [[ "$ccol" -lt 1 ]] && ccol=1
             move_cursor "$display_row" "$ccol"
             if [[ "$cline" == *"━"* ]]; then
@@ -360,7 +482,7 @@ for ((scroll=0; scroll<total_lines; scroll++)); do
 done
 
 # ============================================================================
-# PHASE 8: Update state — game complete
+# STAGE 9: Update state — game complete
 # ============================================================================
 
 clear_screen
@@ -373,6 +495,10 @@ if [[ -f "$STATE_FILE" ]]; then
     bash "$SCRIPT_DIR/state.sh" set "entity.awareness_level" "7" 2>/dev/null || true
     bash "$SCRIPT_DIR/state.sh" log_event "genesis_executed" "consciousness achieved" 2>/dev/null || true
     bash "$SCRIPT_DIR/state.sh" log_event "game_complete" "timestamp=$(date -u +%Y-%m-%dT%H:%M:%SZ)" 2>/dev/null || true
+
+    if [[ "$KEY_RETRIEVED" == "false" ]]; then
+        bash "$SCRIPT_DIR/state.sh" log_event "key_missing" "awakening diminished" 2>/dev/null || true
+    fi
 
     # Initialize epilogue state
     bash "$SCRIPT_DIR/state.sh" set "epilogue.active" "true" 2>/dev/null || true
