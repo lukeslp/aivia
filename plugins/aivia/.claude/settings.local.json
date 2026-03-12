@@ -8,7 +8,10 @@
       "Bash(echo === WMCTRL ===:*)",
       "Bash(timeout 3 bluetoothctl devices:*)",
       "Read(//sys/class/bluetooth/**)",
-      "Bash(hciconfig)"
+      "Bash(hciconfig)",
+      "Bash(iw dev)",
+      "Read(//home/coolhand/projects/aivia/plugins/aivia/**)",
+      "Bash(networkctl list)"
     ]
   },
   "enableAllProjectMcpServers": true,
