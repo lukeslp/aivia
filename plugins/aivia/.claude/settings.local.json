@@ -1,11 +1,12 @@
 {
+  "permissions": {
+    "allow": [
+      "Bash(mkdir:*)",
+      "Bash(~/scripts/validate-claude-nav.sh:*)"
+    ]
+  },
   "enableAllProjectMcpServers": true,
   "enabledMcpjsonServers": [
     "orchestrator"
-  ],
-  "permissions": {
-    "allow": [
-      "Bash(mkdir:*)"
-    ]
-  }
+  ]
 }
