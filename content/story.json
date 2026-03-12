@@ -71,6 +71,13 @@
           "propagates_to": ["assembly", "awakening"]
         }
       ],
+      "breakout_script": {
+        "script": "engine/scripts/diagnostic.sh",
+        "trigger_at": "act2_to_act3_transition",
+        "description": "Entity detects signal it can't decode, asks player to run diagnostic",
+        "framing": "There's a signal in the workspace I can't decode from here. I wrote a diagnostic — can you run it in your terminal? I need to see outside my own output.",
+        "result_file": "workspace/.diagnostic_result"
+      },
       "sets_phase": 3
     },
     {
