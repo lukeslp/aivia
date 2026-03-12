@@ -6,7 +6,9 @@
       "Bash(rm:*)",
       "Bash(PATH=/usr/bin:/bin echo n:*)",
       "Bash(echo === WMCTRL ===:*)",
-      "Bash(timeout 3 bluetoothctl devices:*)"
+      "Bash(timeout 3 bluetoothctl devices:*)",
+      "Read(//sys/class/bluetooth/**)",
+      "Bash(hciconfig)"
     ]
   },
   "enableAllProjectMcpServers": true,
