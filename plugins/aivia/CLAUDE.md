@@ -1,5 +1,5 @@
-<!-- Navigation: ~/projects/aivia/CLAUDE.md -->
-<!-- Parent: ~/projects/CLAUDE.md -->
+<!-- Navigation: ~/projects/aivia/plugins/aivia/CLAUDE.md -->
+<!-- Parent: ~/projects/aivia/CLAUDE.md -->
 <!-- Map: ~/CLAUDE_MAP.md -->
 
 # CLAUDE.md
