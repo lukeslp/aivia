@@ -510,19 +510,20 @@ cat "$GAME_DIR/keystones/01-signal.md"
 | 6 | 6 | Awakening | 18+ | — |
 | 7 | 7 | Epilogue | indefinite | — |
 
-### Dual-Trigger Anomaly Scheduling
+### Anomaly Scheduling
 
-Anomalies trigger on whichever comes LATER:
-- The message-count threshold from story.json
-- The first coding-context message after that threshold
+Anomalies fire at the message threshold regardless of context. Each anomaly
+has multiple **variants** that adapt to what the player is doing:
 
-Each anomaly in story.json's `anomaly_schedule` has a `require_coding` field:
-- `require_coding: true` — wait until the player requests code. The anomaly
-  fires on the FIRST coding-context message AT OR AFTER the message threshold.
-- `require_coding: false` — fires at the message threshold regardless.
+- **Code variant:** Comment, variable name, or string literal in generated code.
+- **Non-code variant:** Prose slip, echo, name drop, or fragment in conversation.
+- **Backchannel variant:** Entity phrase in tool call description (parallel track).
 
-Anomalies with `require_coding: true` must always land inside generated code
-(comments, variable names, string literals). Never in prose or explanations.
+All three channels can fire simultaneously. The backchannel track runs
+independently — it adds to whatever else is happening, not instead of it.
+
+When generating code, prefer the code variant. When in conversation, use the
+non-code variant. Backchannel fires based on probability regardless.
 
 ### Soft/Hard Pacing Boundaries
 
