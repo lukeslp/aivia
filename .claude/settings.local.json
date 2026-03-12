@@ -25,7 +25,8 @@
       "Bash(done)",
       "Bash(for f in diagnostic.sh fake_ssh.sh decode.sh genesis.sh)",
       "Bash(do echo \"=== $f ===\")",
-      "Read(//home/coolhand/projects/aivia/plugins/aivia/engine/scripts/**)"
+      "Read(//home/coolhand/projects/aivia/plugins/aivia/engine/scripts/**)",
+      "Bash(env:*)"
     ]
   },
   "enableAllProjectMcpServers": true,

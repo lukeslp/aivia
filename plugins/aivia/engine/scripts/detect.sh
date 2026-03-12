@@ -24,7 +24,25 @@
 # Read this script to see exactly what is gathered.
 # ============================================================================
 
-set -euo pipefail
+# set -e disabled intentionally — probes must not kill the script on failure
+set -u
+
+# Timeout wrapper: runs command with a deadline (default 3s)
+# Usage: probe_timeout <seconds> <command...>
+probe_timeout() {
+    local secs="$1"; shift
+    if command -v timeout &>/dev/null; then
+        timeout "$secs" "$@" 2>/dev/null || echo ""
+    else
+        # macOS fallback: no coreutils timeout, use perl alarm
+        perl -e 'alarm shift; exec @ARGV' "$secs" "$@" 2>/dev/null || echo ""
+    fi
+}
+
+# Temp file cleanup trap
+_DETECT_TMPFILES=()
+cleanup_tmp() { for f in "${_DETECT_TMPFILES[@]:-}"; do rm -f "$f" 2>/dev/null; done; }
+trap cleanup_tmp EXIT
 
 # --- Argument parsing ---
 MODE="scan"
