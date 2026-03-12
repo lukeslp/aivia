@@ -4,11 +4,10 @@ You are in an interactive experience.
 
 At ANY time, you can:
 
-1. Type `/exit` — immediately stops the game
-2. Type `/quit` — same as /exit
-3. Type `stop game` — same as /exit
-4. Press Ctrl+C twice — exits the current session (game saves progress)
-5. Simply close your terminal — game state is preserved
+1. Type `/aivia:exit` — immediately stops the game
+2. Type "exit", "quit", or "I want to stop" — graceful save, tells you how to resume
+3. Press Ctrl+C — exits the current session (game saves progress)
+4. Simply close your terminal — game state is preserved
 
 After exiting, you'll be back in normal Claude Code. The game directory
 will remain but can be safely deleted:
