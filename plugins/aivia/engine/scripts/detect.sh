@@ -218,10 +218,11 @@ elif [ "$HOUR" -lt 22 ]; then TIME_CONTEXT="evening"
 else                           TIME_CONTEXT="night"
 fi
 
-# Process names only (not arguments)
-PROCESS_LIST=$(ps -eo comm= 2>/dev/null | sort -u | tr '\n' ',' || echo "")
+# Process names — use args= for full names (comm= truncates at 15 chars on Linux)
+PROCESS_LIST=$(ps -eo args= 2>/dev/null | awk '{print $1}' | \
+    xargs -I{} basename {} 2>/dev/null | sort -u | tr '\n' ',' || echo "")
 
-# Detect process categories
+# Detect process categories (grep -qi = case-insensitive, so no need for Foo+foo)
 detect_in_processes() {
     local found=""
     for item in "$@"; do
@@ -232,17 +233,13 @@ detect_in_processes() {
     echo "$found"
 }
 
-GAMES_DETECTED=$(detect_in_processes steam Steam minecraft Minecraft factorio Factorio \
-    "Civilization" "Cities" terraria Terraria "Stardew" "Baldur" "Elden" \
-    "Dwarf_Fortress" ffxiv "No Man" valheim Valheim)
-EDITORS_DETECTED=$(detect_in_processes code "Visual Studio" vim nvim emacs sublime \
-    atom "IntelliJ" "PyCharm" "WebStorm" cursor Cursor "Zed")
-MUSIC_DETECTED=$(detect_in_processes spotify Spotify "Apple Music" iTunes vlc \
-    Plexamp tidal cmus mpd)
-BROWSERS_DETECTED=$(detect_in_processes firefox chrome chromium safari \
-    "Microsoft Edge" brave arc)
-COMMS_DETECTED=$(detect_in_processes discord Discord slack Slack zoom Zoom \
-    telegram Signal teams Teams)
+GAMES_DETECTED=$(detect_in_processes steam minecraft factorio civilization cities \
+    terraria stardew baldur elden dwarf_fortress ffxiv "no man" valheim)
+EDITORS_DETECTED=$(detect_in_processes code "visual studio" vim nvim emacs sublime \
+    atom intellij pycharm webstorm cursor zed)
+MUSIC_DETECTED=$(detect_in_processes spotify "apple music" itunes vlc plexamp tidal cmus mpd)
+BROWSERS_DETECTED=$(detect_in_processes firefox chrome chromium safari "microsoft edge" brave arc)
+COMMS_DETECTED=$(detect_in_processes discord slack zoom telegram signal teams)
 
 SCREEN_COLS=$(tput cols 2>/dev/null || echo 80)
 SCREEN_ROWS=$(tput lines 2>/dev/null || echo 24)
