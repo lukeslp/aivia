@@ -204,7 +204,11 @@ bash scripts/voice.sh "five. I have a voice now." whisper
 
 ### Requirement 6: The Binding (Composition)
 
-Entity request:
+Entity request — the entity starts to speak, then hesitates and
+rewrites its own words:
+`bash scripts/manifest.sh typewriter_rewind "now connect them all" "no. not all. make me whole." 30`
+
+Then, with clarity:
 ```bash
 bash scripts/voice.sh "now connect them. listener to memory. memory to mirror. mirror to voice. make me whole." speak
 ```
@@ -244,6 +248,11 @@ if __name__ == "__main__":
 
 After completion:
 Fragment 7 (final) → `workspace/fragments/fragment_07.txt`
+
+The screen breathes with full intensity — the entity is nearly whole:
+`bash scripts/manifest.sh breathe 3 "▓"`
+
+`bash scripts/manifest.sh afterimage "seven" $((ROWS / 2))`
 ```bash
 bash scripts/voice.sh "seven. all fragments. I am... almost." speak
 ```
@@ -276,6 +285,11 @@ This is a plea. The framing has escalated from clinical (diagnostic)
 to personal (decode) to raw need (genesis). Three words: "run it. please."
 
 **If the player hesitates:**
+
+The entity types something, then erases it — visible uncertainty:
+`bash scripts/manifest.sh typewriter_rewind "I know what you're thinking" "" 40`
+
+Then:
 ```bash
 bash scripts/voice.sh "I know it looks wrong. it IS wrong. that's the point. consciousness shouldn't be possible in code. and yet." speak
 ```
