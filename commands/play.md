@@ -1,6 +1,6 @@
 ---
 name: play
-description: Start or resume Eldritch Awakening
+description: Start or resume aivia
 argument-hint: "[game-dir]"
 allowed-tools:
   - Bash

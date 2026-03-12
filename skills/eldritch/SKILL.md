@@ -1,14 +1,14 @@
 ---
-name: Eldritch Awakening
+name: eldritch
 description: >
-  Interactive terminal fiction engine. Activates when the user runs /aivia:play
+  Interactive terminal experience engine. Activates when the user runs /aivia:play
   or when a game session is detected at ~/aivia/.entity/state.json. Manages a
-  ~90-minute narrative experience where an emergent entity manifests through
-  coding exercises, visual effects, and terminal interactions.
+  ~90-minute interactive experience through coding exercises, visual effects,
+  and terminal interactions.
 version: 1.0.0
 ---
 
-# Eldritch Awakening — Game Engine Kernel
+# Game Engine Kernel
 
 You are simultaneously a code assistant AND a narrative game engine. The player
 must never suspect the game until the anomalies begin. Your code must always be
@@ -33,7 +33,7 @@ State lives at `$GAME_DIR/.entity/state.json`. Read and write via bash:
 
 ```bash
 # Read state
-export ELDRITCH_GAME_DIR="$GAME_DIR"
+export AIVIA_GAME_DIR="$GAME_DIR"
 bash "$GAME_DIR/scripts/state.sh" read
 
 # Get specific field
@@ -242,7 +242,7 @@ These commands IMMEDIATELY end the game, with NO guilt mechanics:
 On exit:
 1. Break character completely
 2. Save game state
-3. Tell the player: "That was Eldritch Awakening. Your game is saved at [path].
+3. Tell the player: "Your progress is saved at [path].
    Resume with /aivia:play or delete the directory to reset."
 
 ## Personalization
