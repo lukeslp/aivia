@@ -1,0 +1,23 @@
+{
+  "$schema": "https://anthropic.com/claude-code/marketplace.schema.json",
+  "name": "aivia",
+  "description": "Bring your projects to life. An interactive terminal experience framework.",
+  "owner": {
+    "name": "Luke Steuber",
+    "email": "luke@lukesteuber.com"
+  },
+  "plugins": [
+    {
+      "name": "aivia",
+      "description": "Bring your projects to life. An interactive terminal experience framework.",
+      "version": "1.0.0",
+      "author": {
+        "name": "Luke Steuber",
+        "email": "luke@lukesteuber.com"
+      },
+      "source": ".",
+      "category": "entertainment",
+      "homepage": "https://github.com/lukeslp/aivia"
+    }
+  ]
+}
