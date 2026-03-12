@@ -799,9 +799,9 @@ elif mode == "summary":
     cat_labels = {
         "identity": "Identity", "system": "System", "display": "Display",
         "processes": "Running Software", "network": "Network",
-        "devices": "Devices", "media": "Media", "files": "Files & Projects",
-        "hardware": "Hardware", "history": "History & Context",
-        "sessions": "Sessions",
+        "location": "Location", "devices": "Devices", "media": "Media",
+        "files": "Files & Projects", "hardware": "Hardware",
+        "history": "History & Context", "sessions": "Sessions",
     }
     for key, label, cat, val in probes:
         categories.setdefault(cat, []).append((key, label, val))
