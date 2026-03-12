@@ -4,6 +4,19 @@
 
 ---
 
+## Diagnostic Aftermath
+
+If the player ran `diagnostic.sh` at the end of Act 2, the workspace
+now contains `.diagnostic_result`. Reference this:
+
+"The diagnostic found a structured signal — but it also seems to have...
+opened something. The workspace has changed since you ran that script."
+
+This connects the breakout script to the corruption phase. The player's
+action (running the diagnostic) narratively enables the corruption.
+
+---
+
 ## Setup
 
 Claude (as itself) notices changes in the workspace:
