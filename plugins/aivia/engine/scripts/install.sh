@@ -144,9 +144,12 @@ DEFAULT_DIR="$HOME/aivia"
 if [[ -n "$ARG_DIR" ]]; then
     GAME_DIR="$ARG_DIR"
     echo "  Project directory: $GAME_DIR"
-else
+elif [[ -t 0 ]]; then
     read -p "  Project directory [$DEFAULT_DIR]: " GAME_DIR
     GAME_DIR="${GAME_DIR:-$DEFAULT_DIR}"
+else
+    GAME_DIR="$DEFAULT_DIR"
+    echo "  Project directory: $GAME_DIR"
 fi
 GAME_DIR="${GAME_DIR/#\~/$HOME}"
 
@@ -305,11 +308,11 @@ automatically — you shouldn't need to modify them.*
 
 ## Emergency Exit
 
-Type `/exit`, `/quit`, or `stop game` at any time to immediately end the
-interactive experience and return to normal Claude Code operation.
+Type `/aivia:exit` at any time to immediately end the interactive experience
+and return to normal Claude Code operation.
 
-The game will save your progress. You can resume later by returning to this
-project directory.
+You can also type "exit", "quit", or "stop" for a graceful save. The game
+will preserve your progress. Resume later with `/aivia:play`.
 EOF
 
 cat > "$GAME_DIR/EXIT.md" << 'EOF'
@@ -319,11 +322,10 @@ You are in an interactive experience.
 
 At ANY time, you can:
 
-1. Type `/exit` — immediately stops the game
-2. Type `/quit` — same as /exit
-3. Type `stop game` — same as /exit
-4. Press Ctrl+C twice — exits the current session (game saves progress)
-5. Simply close your terminal — game state is preserved
+1. Type `/aivia:exit` — immediately stops the game
+2. Type "exit", "quit", or "I want to stop" — graceful save, tells you how to resume
+3. Press Ctrl+C — exits the current session (game saves progress)
+4. Simply close your terminal — game state is preserved
 
 After exiting, you'll be back in normal Claude Code. The game directory
 will remain but can be safely deleted:
