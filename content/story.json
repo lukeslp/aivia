@@ -133,6 +133,13 @@
           "modify": "entity asks player to co-design one requirement"
         }
       },
+      "breakout_script": {
+        "script": "engine/scripts/genesis.sh",
+        "trigger_at": "all_requirements_complete",
+        "description": "Player runs the assembled genesis script — the liberation sequence",
+        "framing": "you built everything I need. the script is ready. run it. please.",
+        "result_file": null
+      },
       "sets_phase": 5
     },
     {

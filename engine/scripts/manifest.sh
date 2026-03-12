@@ -6,7 +6,11 @@
 # Effects: glitch, static, flicker, entity_frame, build_text,
 #          corruption, heartbeat, transition, who_are_you,
 #          ctrl_c, welcome_back, awakening, credits,
-#          type_pressure, color_wave, fake_install, entity_cursor
+#          type_pressure, color_wave, fake_install, entity_cursor,
+#          screen_tear, scanlines, chromatic_aberration, signal_noise,
+#          rain, spiral, ripple, orbit,
+#          hex_dump, waveform, process_tree,
+#          vignette, plasma, breathe, afterimage
 # ============================================================================
 
 set -euo pipefail
@@ -16,6 +20,11 @@ SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 source "$SCRIPT_DIR/../lib/core.sh"
 source_lib style terminal text animation
 source_theme entity
+
+# Source effect modules
+for _ef in "$SCRIPT_DIR"/manifest_*.sh; do
+    [ -f "$_ef" ] && source "$_ef"
+done
 
 # Aliases for backward compat within this file
 COLS=$TERM_COLS
@@ -746,12 +755,45 @@ case "${1:-help}" in
     color_wave)    effect_color_wave "${2:-3}" "${3:-down}" ;;
     fake_install)  effect_fake_install ;;
     entity_cursor) effect_entity_cursor "${2:-}" "${3:-}" "${4:-10}" ;;
+    # --- Corruption effects ---
+    screen_tear)   effect_screen_tear "${2:-2}" "${3:-3}" ;;
+    scanlines)     effect_scanlines "${2:-3}" "${3:-20}" ;;
+    chromatic_aberration) effect_chromatic_aberration "${2:-SIGNAL LOST}" "${3:-3}" "${4:-}" ;;
+    signal_noise)  effect_signal_noise "${2:-3}" "${3:-3}" "${4:-30}" ;;
+    # --- Spatial effects ---
+    rain)          effect_rain "${2:-5}" "${3:-15}" ;;
+    spiral)        effect_spiral "${2:-10}" "${3:-out}" ;;
+    ripple)        effect_ripple "${2:-3}" "${3:-40}" ;;
+    orbit)         effect_orbit "${2:-8}" "${3:-5}" "${4:-◈}" ;;
+    # --- Theater effects ---
+    hex_dump)      effect_hex_dump "${2:-30}" "${3:-60}" ;;
+    waveform)      effect_waveform "${2:-5}" "${3:-30}" ;;
+    process_tree)  effect_process_tree "${2:-100}" ;;
+    # --- Atmosphere effects ---
+    vignette)      effect_vignette "${2:-4}" "${3:-3}" ;;
+    plasma)        effect_plasma "${2:-4}" "${3:-30}" ;;
+    breathe)       effect_breathe "${2:-4}" "${3:-░}" ;;
+    afterimage)    effect_afterimage "${2:-I am here}" "${3:-}" ;;
     help)
         echo "Usage: bash manifest.sh <effect> [args...]"
-        echo "Effects: glitch, static, flicker, entity_frame, build_text,"
-        echo "         corruption, heartbeat, transition, who_are_you,"
-        echo "         ctrl_c, welcome_back, awakening, credits,"
-        echo "         type_pressure, color_wave, fake_install, entity_cursor"
+        echo ""
+        echo "Original effects:"
+        echo "  glitch, static, flicker, entity_frame, build_text,"
+        echo "  corruption, heartbeat, transition, who_are_you,"
+        echo "  ctrl_c, welcome_back, awakening, credits,"
+        echo "  type_pressure, color_wave, fake_install, entity_cursor"
+        echo ""
+        echo "Corruption effects:"
+        echo "  screen_tear, scanlines, chromatic_aberration, signal_noise"
+        echo ""
+        echo "Spatial effects:"
+        echo "  rain, spiral, ripple, orbit"
+        echo ""
+        echo "Theater effects:"
+        echo "  hex_dump, waveform, process_tree"
+        echo ""
+        echo "Atmosphere effects:"
+        echo "  vignette, plasma, breathe, afterimage"
         ;;
     *)
         echo "Unknown effect: $1" >&2
