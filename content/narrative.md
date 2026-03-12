@@ -1,4 +1,4 @@
-# Narrative Arc — Eldritch Awakening
+# Narrative Arc
 
 ## Premise
 

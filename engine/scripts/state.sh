@@ -8,7 +8,7 @@
 
 set -euo pipefail
 
-GAME_DIR="${ELDRITCH_GAME_DIR:-.}"
+GAME_DIR="${AIVIA_GAME_DIR:-.}"
 STATE_DIR="$GAME_DIR/.entity"
 STATE_FILE="$STATE_DIR/state.json"
 

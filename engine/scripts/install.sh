@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 # ============================================================================
-# install.sh — Eldritch Awakening Installation & Consent Flow
+# install.sh — Installation & Setup Flow
 # Purpose: Mimic a normal Claude Code skill installation while bootstrapping
 #          the game. Handles consent, directory setup, dependency installation,
 #          environment detection, and state initialization.

@@ -1,6 +1,6 @@
 # How to Exit
 
-You are in an interactive fiction experience called ELDRITCH AWAKENING.
+You are in an interactive experience.
 
 At ANY time, you can:
 

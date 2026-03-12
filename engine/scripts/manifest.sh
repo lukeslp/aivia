@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 # ============================================================================
-# manifest.sh — ANSI Visual Effects Library for Eldritch Awakening
+# manifest.sh — ANSI Visual Effects Library
 # Purpose: Render all entity-related visual effects in the terminal
 # Usage: bash manifest.sh <effect_name> [args...]
 # Effects: glitch, static, flicker, entity_frame, build_text,
