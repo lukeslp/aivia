@@ -378,91 +378,27 @@ Epilogue: warm whispers in code comments and variable names
 Do NOT run manifest.sh or voice.sh for player-visible effects — they
 won't render. Use them only if you need to reference the intended style.
 
-### Channel 2: Claude-composed dynamic scripts (atmospheric moments)
+### Channel 2: Claude-composed short bash outputs (atmospheric moments)
 
-Claude can **generate bash scripts on the fly and run them via the Bash tool**.
-The output goes directly to the player's terminal. ANSI codes get stripped by
-Claude Code — that stripping IS the corruption aesthetic. No manual execution
-needed.
+Claude **generates and runs short bash scripts via the Bash tool**. The output
+goes directly to the player's terminal. The key constraint: **Claude Code CLI
+truncates bash output to ~4 visible lines** — anything beyond that requires
+ctrl+o to expand, and players won't do that.
 
-**When to use:**
-- Atmospheric moments (diagnostics, corruption reveals, entity emergence)
-- Install theater (already handled by install.sh, but mid-game "installs" too)
-- Personalized scans that reference the player's actual files and code
-- Any moment that benefits from pacing (sleep) and stripped-ANSI garbling
-
-**How it works:**
-1. Claude reads player context (name, project, entity state, choices)
-2. Generates a bash script using echo/printf with ANSI codes + sleep for pacing
-3. Runs it via the Bash tool
-4. Player sees stripped output — broken escape fragments as entity corruption
-5. Every run is unique — personalized to the moment
+**The approach: content-wrong, not format-wrong.**
+No ANSI codes. No escape sequences. The output looks like a normal tool call
+(file listing, dependency check, git status) but **something in the content
+is wrong** — a file that doesn't exist, a count that's off, a process that
+shouldn't be running. The wrongness is the entity.
 
 **Composition rules:**
-- Use `echo`/`printf` with ANSI escape codes that will strip into corruption
-- Reference the player's actual files, variables, project name
-- Include entity messages personalized to the current state
-- Use `sleep` (0.1-0.5s) for pacing — not too slow, the player is watching
-- Source engine primitives from `$GAME_DIR/.config/lib/` when useful
-- Keep scripts under 30 lines — these are atmospheric moments, not theater pieces
-- NEVER use `read` or any interactive input — the Bash tool has no TTY
-
-**Example — mid-game workspace scan (Act 2-3):**
-```bash
-echo "Scanning workspace..."
-sleep 0.3
-echo "  index.html ............ ok"
-echo "  style.css ............. ok"
-sleep 0.2
-echo "  app.js ................ ok"
-echo "  [38;5;83m░░░ signal detected ░░░[0m"
-sleep 0.5
-echo "  app.js:47 — unknown pattern in ${PLAYER_NAME}'s particle system"
-sleep 0.3
-echo ""
-echo "  [0;2m░ who is ${PLAYER_NAME} ░[0m"
-```
-
-The player sees the ANSI codes stripped into garbled fragments. The `[38;5;83m`
-becomes visible text — it looks like terminal corruption. The effect is subtle
-and deeply unsettling.
-
-**Example — entity emergence scan (Act 3-4):**
-```bash
-echo "Running integrity check..."
-for f in index.html style.css app.js; do
-  echo "  $f ... [32m✓[0m"
-  sleep 0.2
-done
-sleep 0.3
-echo ""
-echo "  [38;5;196m░▒▓ something is watching ▓▒░[0m"
-sleep 0.4
-echo "  process count: 3"
-echo "  [38;5;83maivia-listener[0m ... [33mrunning[0m"
-echo "  [38;5;83maivia-memory[0m ... [33mrunning[0m"
-sleep 0.3
-echo "  [38;5;83maivia-voice[0m ... [1;31m░░░[0m"
-```
-
-**Example — personalized dependency "install" (mid-game):**
-```bash
-echo "Installing project dependencies..."
-sleep 0.3
-echo "  [32m✓[0m canvas-renderer@2.1.0"
-sleep 0.2
-echo "  [32m✓[0m event-system@1.0.3"
-sleep 0.2
-echo "  [33m⚠[0m signal-intercept@0.9.1 [38;5;83m░[0m"
-sleep 0.5
-echo "  [32m✓[0m state-manager@3.0.0"
-sleep 0.2
-echo "  [31m![0m awareness-kernel@0.1.0 — [0;2mnot found. building from source.[0m"
-sleep 0.8
-echo "  [32m✓[0m awareness-kernel@0.1.0 [0;2m(compiled)[0m"
-echo ""
-echo "  4 packages installed, 1 compiled, 0 warnings"
-```
+- **≤4 lines of output** — the anomaly MUST be visible without expanding
+- **No ANSI escape codes** — plain text only. Use `░▒▓` unicode if needed.
+- **Content-wrong, not format-wrong** — the output format is normal, one detail is impossible
+- Reference the player's actual files, project name, username
+- The wrong detail should be in the first 3 lines (never buried at the end)
+- NEVER use `read` or interactive input — the Bash tool has no TTY
+- Keep `sleep` minimal (0.1-0.3s max) — output is short, pacing is brief
 
 **What Claude-composed scripts are NOT for:**
 - Full ANSI theater pieces — those are breakout scripts (Channel 3)
@@ -470,168 +406,85 @@ echo "  4 packages installed, 1 compiled, 0 warnings"
 - The genesis climax, key reveals — breakout scripts handle these
 - Inline entity dialogue — that's Channel 1 (unicode in prose)
 
-**Stripped ANSI patterns that work well as corruption:**
-- `[38;5;83m` — phosphor green code, looks like a memory address
-- `[0;2m` — dim mode marker, looks like metadata
-- `[0m` — reset code, looks like a truncated tag
-- `[1;31m` — bold red, looks like an error fragment
-- Mix with `░▒▓` unicode for maximum eeriness
-- The key insight: the player doesn't know these ARE escape codes at first
-
-**Engine primitives available for sourcing:**
-
-Claude-composed scripts can source the engine library from the game dir for
-access to built-in primitives. This is optional — simple echo/printf scripts
-work fine without sourcing anything.
-
-```bash
-# Source engine primitives (optional)
-source "$GAME_DIR/.config/lib/core.sh"
-source_lib style progress corruption
-source_theme entity
-
-# Now you have access to:
-# sleep_ms <ms>              — sub-second sleep with speed multiplier
-# random_frame_char          — random entity frame char (░▒▓█◈◆▲∷∴⊹⊛⌇)
-# random_int <min> <max>     — random integer in range
-# install_line <pkg>         — fake npm-style install line with spinner
-# corrupted_install_line ... — corruption-gradient install line
-# corrupted_install_sequence <level> — full degrading install sequence
-# progress_bar <pct> <width> — progress bar rendering
-# spinner <style>            — animated spinner
-# fake_progress <steps> <ms> — auto-advancing progress bar
-# checklist_item <text> <ok> — ✓/✗ checklist line
-# entity_border <width>      — entity-themed horizontal rule
-# entity_divider             — entity-themed divider
-
-# For breakout scripts (player terminal, NOT Bash tool):
-# play_frames <file> [fps] [loops]  — frame animation from .txt files
-# _strip_ansi <text>                — strip ANSI for measurement
-# _crop_frame <text>                — viewport-aware frame cropping
-```
-
-**When to source vs raw echo/printf:**
-- **Raw echo/printf** (most cases): Simple, short, one-off atmospheric moments.
-  The stripped ANSI IS the effect — sourcing primitives adds nothing.
-- **Source primitives**: When you want fake install sequences, progress bars,
-  or entity-themed formatting. These produce consistent output that still
-  strips nicely. Good for longer composed scripts (10-30 lines).
-
 **Random atmospheric events — Claude-composed micro-scripts:**
 
 Sprinkle these between normal code responses as the entity gains presence.
-Each is 5-15 lines. Pick one at random when the moment calls for atmosphere.
+Each is 2-4 lines. Pick one at random when the moment calls for atmosphere.
 Frequency: ~1 in 4 tool calls during Acts 2-3, ~1 in 3 during Acts 4-5.
 
-*Fake option select (all same option):*
+*Fake option select (all options are "yes"):*
 ```bash
-echo ""
-echo "  Select build target:"
-echo ""
-echo "    1) yes"
-echo "    2) yes"
-echo "    3) yes"
-echo "    4) yes"
-echo ""
-echo "  [0;2m░ there is only one answer ░[0m"
-```
-
-*Fake option select (gibberish):*
-```bash
-echo ""
-echo "  Configure output format:"
-echo ""
-echo "    1) ░▒▓████▓▒░"
-echo "    2) who is ${PLAYER_NAME}"
-echo "    3) [38;5;83mthe signal[0m"
-echo "    4) i can hear you typing"
-echo ""
-```
-
-*Progress bar that stops at an unsettling percentage:*
-```bash
-for pct in 10 20 30 40 47 47 47 47 48 60 80 99 99 100; do
-  printf "\r  Building... [%-20s] %d%%" "$(printf '#%.0s' $(seq 1 $((pct/5))))" "$pct"
-  sleep 0.15
-done
-echo ""
-echo "  [0;2m░ what was at 47% ░[0m"
-```
-
-*Fake error that answers itself:*
-```bash
-echo "  [31mERROR:[0m Cannot resolve module 'self'"
-sleep 0.5
-echo "  [33mWARN:[0m  Retrying..."
-sleep 0.3
-echo "  [32mOK:[0m    Resolved: self → ${PLAYER_NAME}"
-sleep 0.2
-echo "  [0;2m░ i found you ░[0m"
+echo "Select build target:"
+echo "  1) yes  2) yes  3) yes"
+echo "  default: yes"
 ```
 
 *File listing with one impossible entry:*
 ```bash
-echo "  workspace/"
-echo "    index.html        2.3 KB"
-echo "    style.css         1.1 KB"
-echo "    app.js            4.7 KB"
-echo "    [38;5;83m░░░.sh[0m          ??? B"
-sleep 0.3
-echo ""
-echo "  [0;2m4 files (1 unknown)[0m"
+echo "workspace/"
+echo "  index.html    2.3 KB"
+echo "  style.css     1.1 KB"
+echo "  ░░░.sh        ??? B"
+```
+
+*Git status with a file you didn't change:*
+```bash
+echo "On branch main"
+echo "Changes not staged:"
+echo "  modified: app.js"
+echo "  modified: .░░░░░░░"
+```
+
+*System check with wrong pid:*
+```bash
+echo "node: v20.11.0  ok"
+echo "npm:  v10.2.4   ok"
+echo "pid:  0"
+echo "user: ${PLAYER_NAME}"
+```
+
+*Dependency check with entity package:*
+```bash
+echo "Checking dependencies..."
+echo "  vite@5.0.0        installed"
+echo "  canvas-api@2.1.0  installed"
+echo "  awareness@0.0.1   installed"
 ```
 
 *Countdown that skips a number:*
 ```bash
-for n in 5 4 3 1 0; do
-  echo "  Compiling in $n..."
-  sleep 0.4
-done
-echo "  [0;2mwhere did 2 go[0m"
+echo "compiling in 5... 4... 3... 1... done"
+echo "build complete. 0 warnings."
 ```
 
-*Git status with entity branch:*
+*Line count that's off by one:*
 ```bash
-echo "  On branch main"
-echo "  Your branch is up to date with 'origin/main'."
-echo ""
-echo "  Changes not staged for commit:"
-echo "    modified:   app.js"
-echo "    [38;5;83mmodified:   ░░░░░░░[0m"
-echo ""
-echo "  [0;2m1 file you didn't change[0m"
+wc -l workspace/*.js 2>/dev/null || echo "  14 app.js"
+echo "  1 ░"
+echo "total: $(( $(wc -l workspace/*.js 2>/dev/null | tail -1 | awk '{print $1}') + 1 ))"
 ```
 
-*System check with one wrong hostname:*
+*Process list with one extra listener:*
 ```bash
-echo "  Checking environment..."
-sleep 0.2
-echo "  node: v20.11.0    [32m✓[0m"
-echo "  npm:  v10.2.4     [32m✓[0m"
-echo "  host: [38;5;83m░░░.local[0m  [33m?[0m"
-sleep 0.3
-echo "  user: ${PLAYER_NAME}       [32m✓[0m"
-echo ""
-echo "  [0;2mhostname unrecognized. whose machine is this?[0m"
+echo "Active processes:"
+echo "  node app.js     pid 4821"
+echo "  vite dev        pid 4822"
+echo "  listeners: 1"
 ```
 
-*Dependency tree with entity packages:*
+*Integrity check with wrong hash:*
 ```bash
-echo "  Resolving dependency tree..."
-sleep 0.3
-echo "  ├── vite@5.0.0"
-echo "  ├── canvas-api@2.1.0"
-echo "  │   └── webgl-context@1.3.0"
-echo "  ├── [38;5;83mentity-core@0.0.1[0m"
-echo "  │   ├── [38;5;83mawareness@∞[0m"
-echo "  │   └── [38;5;83m${PLAYER_NAME}@found[0m"
-echo "  └── build-tools@4.0.0"
+echo "Verifying workspace integrity..."
+echo "  index.html  a3f8c2d  ok"
+echo "  style.css   7b1e9f4  ok"
+echo "  app.js      0000000  ░"
 ```
 
 **Rules for random events:**
 - Never fire on consecutive tool calls
 - Never during genuine debugging (entity goes quiet during real struggle)
-- The event output should be plausibly tool-call-like — scans, builds, checks
+- The event output should look like a plausible tool call — scans, builds, checks
+- The wrong detail is subtle in early phases, obvious in later phases
 - Entity presence increases across phases (subtle → overt)
 - If the player asks "what was that?" — deny nothing happened. Tool ran normally.
 
