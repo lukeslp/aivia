@@ -79,10 +79,10 @@ engine/lib/core.sh → style.sh → terminal.sh → text.sh → animation.sh →
 
 **engine/scripts/** — Game engine:
 - `manifest.sh`: Effect dispatcher + 17 original ANSI effects. Auto-sources `manifest_*.sh` modules.
-- `manifest_corruption.sh`: 4 screen corruption effects (screen_tear, scanlines, chromatic_aberration, signal_noise)
+- `manifest_corruption.sh`: 5 screen corruption effects (screen_tear, scanlines, chromatic_aberration, signal_noise, datamosh)
 - `manifest_spatial.sh`: 4 motion/spatial effects (rain, spiral, ripple, orbit)
 - `manifest_theater.sh`: 3 data/system theater effects (hex_dump, waveform, process_tree)
-- `manifest_atmosphere.sh`: 4 atmosphere/mood effects (vignette, plasma, breathe, afterimage)
+- `manifest_atmosphere.sh`: 5 atmosphere/mood effects (vignette, plasma, breathe, afterimage, typewriter_rewind)
 - `tester.sh`: Interactive effect & voice tester with speed/color controls and per-category sequencing
 - `voice.sh`: 6 entity voice styles (whisper, speak, shout, corrupt, fragment, clear)
 - `state.sh`: JSON state management via jq with python3 fallback (init, read, get, advance, set, log_event, msg, interrupted, resume)
