@@ -36,6 +36,8 @@ case "${1:-}" in
     help|--help|-h)
         sed -n '2,/^# ====/{ /^# /s/^# //p }' "$0"
         exit 0 ;;
+    deps|install)
+        MODE="$1"; GAME_DIR="${2:-.}" ;;
     "")
         GAME_DIR="." ;;
     *)
@@ -50,6 +52,107 @@ case "$(uname -s)" in
     Darwin) IS_MACOS=true ;;
     Linux)  IS_LINUX=true ;;
 esac
+
+# ============================================================================
+# DEPS / INSTALL — optional tool management (runs before probes)
+# ============================================================================
+
+# Optional tools that unlock extra probes
+# Format: tool_cmd|package_apt|package_brew|what_it_unlocks
+OPTIONAL_DEPS=(
+    "iwgetid|wireless-tools|airport (built-in)|WiFi network name"
+    "nmcli|network-manager|N/A|WiFi network name (fallback)"
+    "bluetoothctl|bluez|blueutil|Bluetooth device names"
+    "playerctl|playerctl|N/A|Now playing track info"
+    "wmctrl|wmctrl|N/A|Open window titles"
+    "xrandr|x11-xserver-utils|N/A|Display resolution + monitor count"
+    "lsusb|usbutils|system_profiler (built-in)|USB device names"
+    "docker|docker.io|docker|Running container names"
+    "sqlite3|sqlite3|sqlite3|Browser history (recent domains)"
+    "jq|jq|jq|Faster state management"
+)
+
+if [ "$MODE" = "deps" ]; then
+    printf "detect.sh — Optional Dependencies\n\n"
+    printf "  %-14s %-10s %-28s %s\n" "TOOL" "STATUS" "PACKAGE" "UNLOCKS"
+    printf "  %-14s %-10s %-28s %s\n" "────" "──────" "───────" "───────"
+    for entry in "${OPTIONAL_DEPS[@]}"; do
+        IFS='|' read -r cmd pkg_apt pkg_brew unlocks <<< "$entry"
+        if command -v "$cmd" &>/dev/null; then
+            status="\033[32minstalled\033[0m"
+        else
+            status="\033[33mmissing\033[0m"
+        fi
+        pkg="$pkg_apt"
+        $IS_MACOS && pkg="$pkg_brew"
+        printf "  %-14s ${status}  %-28s %s\n" "$cmd" "$pkg" "$unlocks"
+    done
+    missing=0
+    for entry in "${OPTIONAL_DEPS[@]}"; do
+        IFS='|' read -r cmd _ _ _ <<< "$entry"
+        command -v "$cmd" &>/dev/null || ((missing++)) || true
+    done
+    printf "\n  %d of %d tools installed" "$((${#OPTIONAL_DEPS[@]} - missing))" "${#OPTIONAL_DEPS[@]}"
+    [ "$missing" -gt 0 ] && printf " (\033[33m%d missing\033[0m — run 'detect.sh install' to fix)" "$missing"
+    printf "\n"
+    exit 0
+fi
+
+if [ "$MODE" = "install" ]; then
+    missing_pkgs=()
+    missing_names=()
+    for entry in "${OPTIONAL_DEPS[@]}"; do
+        IFS='|' read -r cmd pkg_apt pkg_brew unlocks <<< "$entry"
+        if ! command -v "$cmd" &>/dev/null; then
+            pkg="$pkg_apt"
+            $IS_MACOS && pkg="$pkg_brew"
+            # Skip N/A and built-in packages
+            [[ "$pkg" == "N/A" || "$pkg" == *"built-in"* ]] && continue
+            missing_pkgs+=("$pkg")
+            missing_names+=("$cmd")
+        fi
+    done
+
+    if [ ${#missing_pkgs[@]} -eq 0 ]; then
+        printf "All optional tools are already installed.\n"
+        exit 0
+    fi
+
+    printf "The following packages will be installed:\n\n"
+    for i in "${!missing_pkgs[@]}"; do
+        printf "  %s  (%s)\n" "${missing_pkgs[$i]}" "${missing_names[$i]}"
+    done
+
+    printf "\nInstall? [y/N] "
+    read -r confirm
+    if [[ ! "$confirm" =~ ^[Yy] ]]; then
+        printf "Cancelled.\n"
+        exit 0
+    fi
+
+    if $IS_MACOS; then
+        if command -v brew &>/dev/null; then
+            brew install "${missing_pkgs[@]}"
+        else
+            printf "Homebrew not found. Install from https://brew.sh first.\n" >&2
+            exit 1
+        fi
+    elif $IS_LINUX; then
+        if command -v apt-get &>/dev/null; then
+            sudo apt-get install -y "${missing_pkgs[@]}"
+        elif command -v dnf &>/dev/null; then
+            sudo dnf install -y "${missing_pkgs[@]}"
+        elif command -v pacman &>/dev/null; then
+            sudo pacman -S --noconfirm "${missing_pkgs[@]}"
+        else
+            printf "No supported package manager found (apt/dnf/pacman).\n" >&2
+            exit 1
+        fi
+    fi
+
+    printf "\nDone. Run 'detect.sh deps' to verify.\n"
+    exit 0
+fi
 
 # ============================================================================
 # BASIC PROBES — identity, OS, terminal, time, processes, screen
