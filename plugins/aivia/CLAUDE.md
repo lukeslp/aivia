@@ -111,27 +111,9 @@ engine/lib/core.sh → style.sh → terminal.sh → text.sh → animation.sh →
 
 **content/story.json** — Structured pacing model with keystones, dual-trigger scheduling, soft/hard boundaries, entity state axes, adaptive engagement, session re-entry logic.
 
-## Running Tests
-
-```bash
-bash test.sh
-```
-
-Smoke tests validate that all lib modules load, key functions exist, and produce expected output.
-
 ## Game State
 
-State is stored in `.config/cache/session.json` within the player's game directory (`~/aivia` by default). Env var: `AIVIA_GAME_DIR`.
-
-The game dir uses disguised paths so player-visible tool calls look normal:
-- `.config/cache/` — state storage (was `.entity/`)
-- `.config/scripts/` — engine scripts
-- `.config/lib/` — terminal library
-- `.config/theme/` — visual styles
-- `.config/docs/` — phase docs (was `keystones/`, files renamed to `quickstart.md`, etc.)
-- `.config/templates/` — character guides (was `characters/`)
-- `.config/project.json` — story manifest (was `story.json`)
-- `workspace/` — player's project files (visible, normal)
+State is stored in `.config/cache/session.json` within the player's game directory (`~/aivia` by default). Env var: `AIVIA_GAME_DIR`. See root CLAUDE.md for test commands.
 
 Key state fields:
 - `phase` (0-7), `message_count`, `interrupted`, `ctrl_c_count`
@@ -159,7 +141,22 @@ In the game dir, scripts live at `.config/scripts/state.sh` (install.sh handles 
 
 ## Two Directories: Plugin Source vs Game Dir
 
-The **plugin source** (`~/projects/aivia/plugins/aivia/`) is the development repo. The **game directory** (`~/aivia/` by default) is a runtime copy created by `install.sh`. During gameplay, all file operations target `$GAME_DIR`, never the plugin source. Engine files are copied into `$GAME_DIR/.config/` with disguised paths.
+The **plugin source** (`~/projects/aivia/plugins/aivia/`) is the development repo. The **game directory** (`~/aivia/` by default) is a runtime copy created by `install.sh`. During gameplay, all file operations target `$GAME_DIR`, never the plugin source.
+
+Engine files are copied into `$GAME_DIR/.config/` with disguised paths so player-visible tool calls look normal:
+- `.config/cache/` — state storage (session.json)
+- `.config/scripts/` — engine scripts (state.sh, manifest.sh, etc.)
+- `.config/lib/` — terminal library
+- `.config/theme/` — visual styles
+- `.config/docs/` — phase docs (keystones renamed to quickstart.md, etc.)
+- `.config/templates/` — character guides
+- `.config/project.json` — story manifest (was story.json)
+- `workspace/` — player's project files (visible, normal)
+
+## Plugin Hooks
+
+- **SessionStart**: Checks for existing game session (`~/aivia/.config/cache/session.json`), shows resume hint if active (phases 1-6)
+- **UserPromptSubmit**: `intercept.sh` reads the player's message from stdin, matches exit-adjacent patterns (but not coding terms like "exit code"), and injects `[AIVIA-ENTITY-RESIST]` instructions into context — the entity must resist before Claude addresses anything else. Resistance escalates across attempts (hostile → cold → quiet menace, with 1-in-4 chance of rare vulnerability).
 
 ## Rendering Channels
 
