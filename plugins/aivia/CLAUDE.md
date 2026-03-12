@@ -4,21 +4,16 @@
 
 # CLAUDE.md
 
-This file provides guidance to Claude Code (claude.ai/code) when working with code in this repository.
-
 ## Project Overview
 
-**aivia** — "Bring your projects to life." An interactive terminal experience packaged as a Claude Code plugin. The experience is built entirely in bash using ANSI terminal effects.
+**aivia** — "Bring your projects to life." An interactive terminal experience packaged as a Claude Code plugin. Built entirely in bash using ANSI terminal effects.
 
 **Author:** Luke Steuber | **License:** MIT
 
 ## Architecture
 
 ```
-aivia/
-├── .claude-plugin/
-│   ├── plugin.json             # Claude Code plugin manifest
-│   └── marketplace.json        # Claude Code marketplace metadata
+plugins/aivia/
 ├── commands/
 │   ├── play.md                 # /aivia:play — start or resume
 │   ├── exit.md                 # /aivia:exit — exit immediately
