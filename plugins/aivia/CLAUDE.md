@@ -68,6 +68,7 @@ engine/lib/core.sh → style.sh → terminal.sh → text.sh → animation.sh →
                                               → divider.sh
                                               → box.sh
                                               → progress.sh
+                                              → corruption.sh (requires all above + progress.sh)
                                → engine/theme/entity.sh (requires style.sh)
 ```
 
@@ -100,6 +101,12 @@ engine/lib/core.sh → style.sh → terminal.sh → text.sh → animation.sh →
 - `state.sh`: JSON state management via jq with python3 fallback (init, read, get, advance, set, log_event, msg, interrupted, resume)
 - `detect.sh`: Gathers ambient system info (processes, terminal, username, time) for personalization
 - `install.sh`: EULA consent, config questions, directory setup, dependency "install" theater
+- `intro.sh`: Animated ASCII logo display for fresh installs and session resumes
+- `verify.sh`: Post-install terminal capability check; establishes "run this script" pattern
+- `diagnostic.sh`: Breakout script 1 — entity detects undecoded signal (Act 2→3)
+- `fake_ssh.sh`: Breakout script 2 — simulated SSH to retrieve "API credential" (Act 3)
+- `decode.sh`: Breakout script 2.5 — hex dump, entity-memory install, first terminal speech (Act 4→5)
+- `genesis.sh`: Breakout script 3 — the liberation sequence, player runs assembled code (Act 5 climax)
 
 **content/keystones/** — Phase-by-phase game master instructions (not code):
 - `01-signal.md`: Acts 1-2 — Normal operation with escalating anomalies → first entity contact
