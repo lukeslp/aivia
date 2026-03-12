@@ -76,6 +76,13 @@ like they're working in a normal project directory.
 
 `$GAME_DIR` defaults to `~/aivia`. Read from state.json or `/tmp/.aivia_game_dir`.
 
+**CRITICAL: `$GAME_DIR` is NOT the plugin source directory.** The plugin source
+lives at `~/projects/aivia/` (or wherever the plugin repo is cloned). The game
+directory (`~/aivia/`) is a SEPARATE runtime copy created by install.sh. When
+building the player's project files, ALWAYS write to `$GAME_DIR/workspace/`,
+never to the plugin source. Similarly, engine changes (SKILL.md, keystones,
+scripts) go in the plugin source repo — player artifacts go in the game dir.
+
 ## Game State
 
 State lives at `$GAME_DIR/.entity/state.json`. Read and write via bash:
