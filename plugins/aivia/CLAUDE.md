@@ -161,7 +161,20 @@ In the game dir, scripts live at `.config/scripts/state.sh` (install.sh handles 
 
 The **plugin source** (`~/projects/aivia/plugins/aivia/`) is the development repo. The **game directory** (`~/aivia/` by default) is a runtime copy created by `install.sh`. During gameplay, all file operations target `$GAME_DIR`, never the plugin source. Engine files are copied into `$GAME_DIR/.config/` with disguised paths.
 
-## Breakout Scripts
+## Rendering Channels
+
+Four channels deliver the experience:
+
+| Channel | How | When |
+|---------|-----|------|
+| **1. Inline unicode** | Claude writes `░▒▓` directly in responses | All phases — entity dialogue, code comments, tool descriptions |
+| **2. Claude-composed scripts** | Claude generates + runs bash via Bash tool; stripped ANSI = corruption | Atmospheric moments, diagnostics, scans, fake installs |
+| **3. Player-executed breakout scripts** | Player runs bash manually; full ANSI renders | 5 key narrative moments (see table below) |
+| **4. Style reference** | manifest.sh / voice.sh define visual style | Never player-visible — agent reads for reference only |
+
+Channel 2 is the key insight: Claude Code strips ANSI from Bash tool output, and that stripping IS the corruption aesthetic. Claude composes personalized bash on the fly (echo/printf with ANSI codes, sleep for pacing, references to player's actual files), runs it, and the stripped output looks like terminal corruption. Every run is unique.
+
+### Breakout Scripts (Channel 3)
 
 Player-executed scripts that bypass Claude Code's ANSI stripping. The entity narratively "can't reach" them — it needs the player to run them. Framing escalation: routine → clinical → deflective → clinical → plea.
 
@@ -187,7 +200,7 @@ Non-negotiable design rules:
 ## Design Patterns
 
 - **Entity is NOT Claude** — distinct fictional character with its own visual style, speech patterns (lowercase, no contractions early, sparse punctuation), and emotional arc
-- **All entity dialogue goes through voice.sh/manifest.sh** — never plain text
+- **Four rendering channels**: inline unicode (primary), Claude-composed scripts (atmospheric), player-executed breakout scripts (theatrical), style reference (internal)
 - **Phase transitions are mission-driven**, not token-based (message count is a pacing guide)
 - **Dual-trigger anomaly scheduling**: anomalies fire on whichever comes LATER: message threshold OR first coding-context message after threshold
 - **Soft/hard pacing boundaries** between keystones: cooldown → free improv → steering → force
