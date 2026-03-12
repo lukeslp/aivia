@@ -2,7 +2,7 @@
 # ============================================================================
 # manifest_atmosphere.sh — Atmosphere & Mood Effects
 # Purpose: Ambient lighting, screen presence, environmental mood
-# Effects: vignette, plasma, breathe, afterimage
+# Effects: vignette, plasma, breathe, afterimage, typewriter_rewind
 # Sourced by manifest.sh — do not run directly
 # ============================================================================
 
