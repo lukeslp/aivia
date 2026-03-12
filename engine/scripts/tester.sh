@@ -59,6 +59,7 @@ EFFECTS_CORRUPTION=(
     "scanlines"
     "chromatic_aberration"
     "signal_noise"
+    "datamosh"
 )
 EFFECTS_SPATIAL=(
     "rain"
@@ -76,6 +77,7 @@ EFFECTS_ATMOSPHERE=(
     "plasma"
     "breathe"
     "afterimage"
+    "typewriter_rewind"
 )
 
 CATEGORY_NAMES=("original" "corruption" "spatial" "theater" "atmosphere")
