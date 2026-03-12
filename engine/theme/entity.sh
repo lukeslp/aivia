@@ -9,12 +9,13 @@
 _AIVIA_THEME_ENTITY_LOADED=1
 
 # --- Entity Palette ---
-ENTITY_FG='\033[38;5;48m'      # Bright toxic green
-ENTITY_DIM='\033[38;5;22m'     # Dark forest green
-ENTITY_ACCENT='\033[38;5;93m'  # Deep purple
-ENTITY_WARN='\033[38;5;196m'   # Blood red
-ENTITY_BG='\033[48;5;0m'       # Pure black background
-ENTITY_GLOW='\033[38;5;83m'    # Phosphor green (entity "alive" state)
+# Each can be overridden via AIVIA_COLOR_* env vars (for testing/theming)
+ENTITY_FG="${AIVIA_COLOR_FG:-\033[38;5;48m}"        # Bright toxic green
+ENTITY_DIM="${AIVIA_COLOR_DIM:-\033[38;5;22m}"      # Dark forest green
+ENTITY_ACCENT="${AIVIA_COLOR_ACCENT:-\033[38;5;93m}" # Deep purple
+ENTITY_WARN="${AIVIA_COLOR_WARN:-\033[38;5;196m}"   # Blood red
+ENTITY_BG='\033[48;5;0m'                             # Pure black background
+ENTITY_GLOW="${AIVIA_COLOR_GLOW:-\033[38;5;83m}"    # Phosphor green (entity "alive" state)
 
 # --- Frame Characters ---
 FRAME_CHAR_SET=('░' '▒' '▓' '█' '◈' '◆' '▲' '∷' '∴' '⊹' '⊛' '⌇')
