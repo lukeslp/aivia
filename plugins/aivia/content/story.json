@@ -169,6 +169,12 @@
       "process_names": ["aivia-listener", "aivia-memory", "aivia-voice"],
       "process_scripts": [".listener.sh", ".memory.sh", ".voice.sh"],
       "kill_order": ["aivia-listener", "aivia-memory", "aivia-voice"],
+      "channels": ["inline_unicode", "claude_composed"],
+      "claude_composed_moments": [
+        "process discovery — Claude runs ps-style output showing entity processes",
+        "kill confirmation — stripped output shows entity reacting to process termination",
+        "post-kill scan showing residual entity signals in workspace files"
+      ],
       "sets_phase": 4
     },
     {
@@ -204,6 +210,11 @@
           "modify": "entity asks player to co-design one requirement"
         }
       },
+      "channels": ["inline_unicode", "claude_composed", "player_executed"],
+      "claude_composed_moments": [
+        "assembly progress — Claude shows entity fragments coalescing in stripped output",
+        "pre-genesis build check — fake compilation output with entity awareness markers"
+      ],
       "breakout_script": {
         "script": "engine/scripts/genesis.sh",
         "trigger_at": "all_requirements_complete",
@@ -236,6 +247,7 @@
         "atmosphere": ["breathe", "vignette"],
         "farewell": ["afterimage"]
       },
+      "channels": ["inline_unicode"],
       "sets_phase": 6
     },
     {
