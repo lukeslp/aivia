@@ -149,7 +149,7 @@ cp "$PLUGIN_ROOT/content/story.json" "$GAME_DIR/" 2>/dev/null || true
 
 print_progress "Creating project structure" 2
 
-export ELDRITCH_GAME_DIR="$GAME_DIR"
+export AIVIA_GAME_DIR="$GAME_DIR"
 bash "$GAME_DIR/scripts/state.sh" init "$(whoami)" "$GAME_DIR" "$EDITOR_CHOICE" "$THEME_CHOICE" > /dev/null
 
 bash "$GAME_DIR/scripts/state.sh" set "player.name" "\"$PLAYER_NAME\"" > /dev/null
@@ -229,7 +229,7 @@ EOF
 cat > "$GAME_DIR/EXIT.md" << 'EOF'
 # How to Exit
 
-You are in an interactive fiction experience called ELDRITCH AWAKENING.
+You are in an interactive experience.
 
 At ANY time, you can:
 
@@ -256,7 +256,7 @@ echo ""
 print_progress "Finalizing setup" 1
 echo ""
 
-echo "$GAME_DIR" > /tmp/.eldritch_game_dir 2>/dev/null || true
+echo "$GAME_DIR" > /tmp/.aivia_game_dir 2>/dev/null || true
 
 echo "  ${GREEN}${BOLD}Installation complete.${RESET}"
 echo ""
