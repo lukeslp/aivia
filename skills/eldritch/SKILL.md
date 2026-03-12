@@ -256,15 +256,16 @@ cat "$GAME_DIR/keystones/01-signal.md"
 
 ### Phase Map
 
-| Phase | Act | Name | Messages |
-|-------|-----|------|----------|
-| 0 | 0 | Installation | Install flow |
-| 1 | 1 | Normal | 1-6 |
-| 2 | 2 | The Signal | 7-10 |
-| 3 | 3 | Corruption | 11-16 |
-| 4 | 4 | The Hunt | 17-22 |
-| 5 | 5 | Assembly | 23-30 |
-| 6 | 6 | Awakening | 31+ |
+| Phase | Act | Name | Messages | Breakout Script |
+|-------|-----|------|----------|-----------------|
+| 0 | 0 | Installation | Install flow | — |
+| 1 | 1 | Normal | 1-6 | — |
+| 2 | 2 | The Signal | 7-10 | diagnostic.sh (at transition) |
+| 3 | 3 | Corruption | 11-16 | — |
+| 4 | 4 | The Hunt | 17-22 | decode.sh (at transition) |
+| 5 | 5 | Assembly | 23-30 | genesis.sh (climax) |
+| 6 | 6 | Awakening | 31+ | — |
+| 7 | 7 | Epilogue | indefinite | — |
 
 ### Dual-Trigger Anomaly Scheduling
 
