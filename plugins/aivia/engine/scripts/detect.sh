@@ -449,14 +449,16 @@ elif $IS_MACOS; then
         [ -n "$WINDOW_TITLES" ] && break
     done
 fi
-# Fallback: tmux pane titles (headless servers accessed via SSH)
-if [ -z "$WINDOW_TITLES" ] && [ -n "${TMUX:-}" ]; then
-    WINDOW_TITLES=$(tmux list-windows -F '#{window_name}' 2>/dev/null | \
-        grep -v "^bash$\|^zsh$\|^sh$" | head -5 | tr '\n' '|' || echo "")
-    # Also grab pane current commands if window names are generic
-    [ -z "$WINDOW_TITLES" ] && \
-        WINDOW_TITLES=$(tmux list-panes -a -F '#{pane_current_command}' 2>/dev/null | \
+# Fallback: tmux session/window names (works on headless servers even outside tmux)
+if [ -z "$WINDOW_TITLES" ] && command -v tmux &>/dev/null; then
+    # Session names are most revealing (user-named)
+    WINDOW_TITLES=$(tmux list-sessions -F '#{session_name}' 2>/dev/null | \
+        head -5 | tr '\n' '|' || echo "")
+    # Also grab window names if sessions are generic
+    if [ -z "$WINDOW_TITLES" ]; then
+        WINDOW_TITLES=$(tmux list-windows -a -F '#{window_name}' 2>/dev/null | \
             grep -v "^bash$\|^zsh$\|^sh$" | sort -u | head -5 | tr '\n' '|' || echo "")
+    fi
 fi
 # Fallback: screen session names
 if [ -z "$WINDOW_TITLES" ] && command -v screen &>/dev/null; then
