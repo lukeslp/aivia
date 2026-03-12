@@ -16,8 +16,8 @@ Display current game progress without spoiling future content.
 2. Display a non-spoiler summary:
 
    ```
-   Eldritch Awakening
-   ──────────────────
+   aivia
+   ─────
    Phase: [N] of 6
    Messages: [count]
    Fragments: [collected] / [total]

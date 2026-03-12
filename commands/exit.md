@@ -1,6 +1,6 @@
 ---
 name: exit
-description: Exit Eldritch Awakening immediately
+description: Exit aivia immediately
 allowed-tools:
   - Bash
   - Read
