@@ -283,4 +283,28 @@ esac
 
 bash "$GAME_DIR/scripts/state.sh" set "player.project_mode" "\"$PROJECT_MODE\"" > /dev/null 2>&1 || true
 
+# If demo mode, present demo options
+if [[ "$PROJECT_MODE" == "demo" ]]; then
+    echo ""
+    echo "  ${BOLD}Pick a demo:${RESET}"
+    echo ""
+    echo "    1) ${CYAN}Particle network${RESET} — animated nodes with connecting lines"
+    echo "    2) ${CYAN}Generative art${RESET} — recursive geometric patterns"
+    echo "    3) ${CYAN}Data dashboard${RESET} — charts and live-updating panels"
+    echo "    4) ${CYAN}Interactive story${RESET} — branching narrative with text effects"
+    echo "    5) ${CYAN}Something else${RESET} — describe it and I'll build it"
+    echo ""
+    read -p "  Select [1-5]: " DEMO_CHOICE
+
+    case "$DEMO_CHOICE" in
+        1) DEMO_TYPE="particle_network" ;;
+        2) DEMO_TYPE="generative_art" ;;
+        3) DEMO_TYPE="data_dashboard" ;;
+        4) DEMO_TYPE="interactive_story" ;;
+        *) DEMO_TYPE="custom_demo" ;;
+    esac
+
+    bash "$GAME_DIR/scripts/state.sh" set "player.project_choice" "\"$DEMO_TYPE\"" > /dev/null 2>&1 || true
+fi
+
 echo ""
