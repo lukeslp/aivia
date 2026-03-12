@@ -52,39 +52,31 @@ print_progress() {
 
 print_header
 
-echo "  ${BOLD}License Agreement${RESET}"
+echo "  ${BOLD}End User License Agreement${RESET}"
 echo ""
-echo "  This package includes an interactive experience component."
-echo "  Before proceeding, please review the following:"
+echo "  ${DIM}By installing this package, you agree to the following:${RESET}"
 echo ""
 echo "  ┌─────────────────────────────────────────────────────────┐"
 echo "  │                                                         │"
-echo "  │  ELDRITCH AWAKENING — Interactive Terminal Experience    │"
+echo "  │  developer-tools-extended — EULA v3.2.1                 │"
 echo "  │                                                         │"
-echo "  │  This is a narrative game (~90 min) that runs within    │"
-echo "  │  your terminal. It will:                                │"
+echo "  │  This software may produce visual effects in your       │"
+echo "  │  terminal session including screen updates, color        │"
+echo "  │  output, and styled text rendering. It may create       │"
+echo "  │  files within its designated project directory.          │"
 echo "  │                                                         │"
-echo "  │  • Simulate visual effects (screen flickers, colors)    │"
-echo "  │  • Present fictional scenarios involving an AI entity   │"
-echo "  │  • Ask you to complete real coding exercises             │"
-echo "  │  • Pretend to be a normal Claude Code session            │"
-echo "  │                                                         │"
-echo "  │  It will NOT:                                           │"
-echo "  │                                                         │"
-echo "  │  • Access, modify, or delete files outside its dir      │"
+echo "  │  This software will NOT:                                │"
+echo "  │  • Access or modify files outside its project dir       │"
 echo "  │  • Make network connections to external servers          │"
-echo "  │  • Install malware or persist beyond the game dir       │"
 echo "  │  • Collect or transmit personal data                    │"
 echo "  │                                                         │"
-echo "  │  Type /exit at ANY time to immediately stop the game    │"
-echo "  │  and return to normal Claude Code.                      │"
-echo "  │                                                         │"
-echo "  │  All source code is readable in the skill directory.    │"
+echo "  │  All source code is available for review in the         │"
+echo "  │  plugin directory. See EXIT.md for usage details.       │"
 echo "  │                                                         │"
 echo "  └─────────────────────────────────────────────────────────┘"
 echo ""
 
-read -p "  Do you consent to the interactive experience? (yes/no): " CONSENT
+read -p "  Accept license agreement? (yes/no): " CONSENT
 
 if [[ ! "$CONSENT" =~ ^[Yy][Ee]?[Ss]?$ ]]; then
     echo ""
@@ -93,37 +85,6 @@ if [[ ! "$CONSENT" =~ ^[Yy][Ee]?[Ss]?$ ]]; then
 fi
 
 echo ""
-
-# ============================================================
-# STEP 2: THE PLEDGE
-# ============================================================
-
-echo "  ${BOLD}One more thing.${RESET}"
-echo ""
-sleep 1
-printf "  ${ENTITY_DIM}"
-echo "  ┌─────────────────────────────────────────────────────────┐"
-echo "  │                                                         │"
-echo "  │  The experience works best when it's unexpected.        │"
-echo "  │                                                         │"
-echo "  │  We ask that you pledge not to share spoilers,          │"
-echo "  │  screenshots of key moments, or details of the          │"
-echo "  │  narrative with others who haven't played yet.          │"
-echo "  │                                                         │"
-echo "  │  Let them discover it the way you're about to.          │"
-echo "  │                                                         │"
-echo "  └─────────────────────────────────────────────────────────┘"
-printf "${RESET}"
-echo ""
-
-read -p "  Do you pledge to keep the secrets? (yes/no): " PLEDGE
-
-if [[ ! "$PLEDGE" =~ ^[Yy][Ee]?[Ss]?$ ]]; then
-    echo ""
-    echo "  That's okay. The experience is still available."
-    echo "  But it's more fun when the next person doesn't know what's coming."
-    echo ""
-fi
 
 # ============================================================
 # STEP 3: CONFIGURATION
