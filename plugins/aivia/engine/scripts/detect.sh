@@ -718,6 +718,11 @@ probes = [
     ("uptime_seconds",     "Uptime (seconds)",    "hardware",  env_int("UPTIME_SECONDS")),
     ("timezone",           "Timezone",            "system",    env("TIMEZONE")),
     ("timezone_full",      "Timezone Full",       "system",    env("TIMEZONE_FULL")),
+    ("public_ip",          "Public IP",           "network",   env("PUBLIC_IP")),
+    ("geo_city",           "City",                "location",  env("GEO_CITY")),
+    ("geo_region",         "Region",              "location",  env("GEO_REGION")),
+    ("geo_country",        "Country",             "location",  env("GEO_COUNTRY")),
+    ("geo_isp",            "ISP",                 "location",  env("GEO_ISP")),
     ("terminal_sessions",  "Terminal Sessions",   "sessions",  env_int("TERM_SESSIONS")),
 ]
 
