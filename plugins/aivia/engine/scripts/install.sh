@@ -62,7 +62,7 @@ print_header() {
         echo ""
         echo "    bring your code to life."
         echo ""
-        printf "    ${RESET}${DIM}v1.0.0 — Claude Code Extension${RESET}\n"
+        printf "    ${RESET}${DIM}v2.0.0 — Claude Code Extension${RESET}\n"
         printf "${RESET}"
         echo ""
     }
