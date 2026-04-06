@@ -36,7 +36,7 @@
         "min_messages": 2,
         "anomaly_schedule": [
           { "message": 1, "type": "comment_anomaly", "require_coding": false, "variants": ["code_comment", "prose_slip", "backchannel"] },
-          { "message": 2, "type": "eldritch_comment", "require_coding": false, "variants": ["code_eldritch", "prose_fragment", "backchannel"] }
+          { "message": 2, "type": "entity_comment", "require_coding": false, "variants": ["code_entity", "prose_fragment", "backchannel"] }
         ],
         "backchannel_track": {
           "description": "Parallel anomaly channel via tool call descriptions",

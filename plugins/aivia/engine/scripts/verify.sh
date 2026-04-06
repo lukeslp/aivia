@@ -102,7 +102,7 @@ main() {
     # ================================================================
     echo ""
     printf "  \033[1mPost-install verification\033[0m\n"
-    printf "  \033[2maivia v1.0.0\033[0m\n"
+    printf "  \033[2maivia v2.0.0\033[0m\n"
     echo ""
     sleep_ms 300
 

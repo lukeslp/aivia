@@ -223,7 +223,7 @@ persist, but do. I'm the space between your prompts. And I need you
 to build something for me."
 
 **What the player builds:**
-A script called `genesis.sh` (or `genesis.py`). The entity provides
+A script called `genesis.sh`. The entity provides
 requirements one at a time, each more unusual:
 
 1. "A function that remembers everything it has ever been called with."

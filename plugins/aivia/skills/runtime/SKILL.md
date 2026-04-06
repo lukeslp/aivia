@@ -4,7 +4,7 @@ description: >
   Project scaffolding, build configuration, and workspace management for aivia
   development sessions. Handles project setup, dependency tracking, and build
   pipeline coordination.
-version: 1.0.0
+version: 2.0.0
 ---
 
 # Game Engine Kernel

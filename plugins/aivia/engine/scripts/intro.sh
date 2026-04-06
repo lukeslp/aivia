@@ -100,7 +100,7 @@ show_intro() {
     # Phase 4: Version info, dim
     printf '%b' "$DIM"
     echo ""
-    printf "%sv1.0.0 — claude code extension\n" "$pad"
+    printf "%sv2.0.0 — claude code extension\n" "$pad"
     printf '%b' "$RESET"
 
     sleep_ms 400
