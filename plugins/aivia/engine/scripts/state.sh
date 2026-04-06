@@ -29,20 +29,27 @@ json_read() {
     if ensure_jq; then
         jq -r "$key" "$STATE_FILE" 2>/dev/null || echo "null"
     else
-        python3 -c "
-import json, sys
-with open('$STATE_FILE') as f:
-    data = json.load(f)
-keys = '$key'.strip('.').split('.')
-val = data
-for k in keys:
-    if isinstance(val, dict) and k in val:
-        val = val[k]
-    else:
-        val = None
-        break
-print(val if val is not None else 'null')
-" 2>/dev/null || echo "null"
+        export _P_STATE_FILE="$STATE_FILE"
+        export _P_KEY="$key"
+        python3 << 'PYEOF'
+import json, os
+state_file = os.environ.get("_P_STATE_FILE", "")
+key = os.environ.get("_P_KEY", "")
+try:
+    with open(state_file) as f:
+        data = json.load(f)
+    keys = key.strip('.').split('.')
+    val = data
+    for k in keys:
+        if isinstance(val, dict) and k in val:
+            val = val[k]
+        else:
+            val = None
+            break
+    print(val if val is not None else 'null')
+except Exception:
+    print('null')
+PYEOF
     fi
 }
 
@@ -53,21 +60,30 @@ json_write() {
         local tmp=$(mktemp)
         jq "$key = $value" "$STATE_FILE" > "$tmp" && mv "$tmp" "$STATE_FILE"
     else
-        python3 -c "
-import json
-with open('$STATE_FILE') as f:
-    data = json.load(f)
-keys = '$key'.strip('.').split('.')
-obj = data
-for k in keys[:-1]:
-    obj = obj.setdefault(k, {})
+        export _P_STATE_FILE="$STATE_FILE"
+        export _P_KEY="$key"
+        export _P_VALUE="$value"
+        python3 << 'PYEOF'
+import json, os
+state_file = os.environ.get("_P_STATE_FILE", "")
+key = os.environ.get("_P_KEY", "")
+value_str = os.environ.get("_P_VALUE", "")
 try:
-    obj[keys[-1]] = json.loads('$value')
-except (json.JSONDecodeError, TypeError):
-    obj[keys[-1]] = '$value'
-with open('$STATE_FILE', 'w') as f:
-    json.dump(data, f, indent=2)
-" 2>/dev/null
+    with open(state_file) as f:
+        data = json.load(f)
+    keys = key.strip('.').split('.')
+    obj = data
+    for k in keys[:-1]:
+        obj = obj.setdefault(k, {})
+    try:
+        obj[keys[-1]] = json.loads(value_str)
+    except (json.JSONDecodeError, TypeError):
+        obj[keys[-1]] = value_str
+    with open(state_file, 'w') as f:
+        json.dump(data, f, indent=2)
+except Exception:
+    pass
+PYEOF
     fi
 }
 
@@ -154,18 +170,29 @@ cmd_log_event() {
         jq ".events += [{\"type\": \"$event_type\", \"detail\": \"$detail\", \"at\": \"$timestamp\"}]" \
             "$STATE_FILE" > "$tmp" && mv "$tmp" "$STATE_FILE"
     else
-        python3 -c "
-import json
-with open('$STATE_FILE') as f:
-    data = json.load(f)
-data['events'].append({
-    'type': '$event_type',
-    'detail': '$detail',
-    'at': '$timestamp'
-})
-with open('$STATE_FILE', 'w') as f:
-    json.dump(data, f, indent=2)
-"
+        export _P_STATE_FILE="$STATE_FILE"
+        export _P_EVENT_TYPE="$event_type"
+        export _P_DETAIL="$detail"
+        export _P_TIMESTAMP="$timestamp"
+        python3 << 'PYEOF'
+import json, os
+state_file = os.environ.get("_P_STATE_FILE", "")
+event_type = os.environ.get("_P_EVENT_TYPE", "")
+detail = os.environ.get("_P_DETAIL", "")
+timestamp = os.environ.get("_P_TIMESTAMP", "")
+try:
+    with open(state_file) as f:
+        data = json.load(f)
+    data['events'].append({
+        'type': event_type,
+        'detail': detail,
+        'at': timestamp
+    })
+    with open(state_file, 'w') as f:
+        json.dump(data, f, indent=2)
+except Exception:
+    pass
+PYEOF
     fi
 }
 
@@ -196,15 +223,19 @@ cmd_resume() {
 
     # Calculate elapsed seconds since last interaction
     if command -v python3 &>/dev/null; then
-        local elapsed=$(python3 -c "
+        export _P_LAST="$last"
+        local elapsed=$(python3 << 'PYEOF'
 from datetime import datetime
+import os
 try:
-    last = datetime.fromisoformat('$last'.replace('Z', '+00:00'))
+    last_str = os.environ.get("_P_LAST", "")
+    last = datetime.fromisoformat(last_str.replace('Z', '+00:00'))
     now = datetime.utcnow()
     print(int((now - last.replace(tzinfo=None)).total_seconds()))
-except:
+except Exception:
     print(0)
-")
+PYEOF
+        )
     else
         elapsed=0
     fi
@@ -235,18 +266,27 @@ CTXEOF
         local tmp=$(mktemp)
         jq ".$key = \"$value\"" "$context_file" > "$tmp" && mv "$tmp" "$context_file"
     elif command -v python3 &>/dev/null; then
-        python3 -c "
-import json
-with open('$context_file') as f:
-    data = json.load(f)
-keys = '$key'.split('.')
-obj = data
-for k in keys[:-1]:
-    obj = obj.setdefault(k, {})
-obj[keys[-1]] = '$value'
-with open('$context_file', 'w') as f:
-    json.dump(data, f, indent=2)
-"
+        export _P_CTX_FILE="$context_file"
+        export _P_KEY="$key"
+        export _P_VALUE="$value"
+        python3 << 'PYEOF'
+import json, os
+ctx_file = os.environ.get("_P_CTX_FILE", "")
+key = os.environ.get("_P_KEY", "")
+value = os.environ.get("_P_VALUE", "")
+try:
+    with open(ctx_file) as f:
+        data = json.load(f)
+    keys = key.split('.')
+    obj = data
+    for k in keys[:-1]:
+        obj = obj.setdefault(k, {})
+    obj[keys[-1]] = value
+    with open(ctx_file, 'w') as f:
+        json.dump(data, f, indent=2)
+except Exception:
+    pass
+PYEOF
     fi
 }
 
